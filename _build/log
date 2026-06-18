@@ -1,23 +1,7 @@
-# dune runtest
+# dune promote
 # OCAMLPARAM: unset
 # Shared cache: enabled-except-user-rules
 # Shared cache location: /Users/aaronjasonbaptist/.cache/dune/db
 # Workspace root: "/Users/aaronjasonbaptist/Documents/IIT
 # Kharagpur/Academic/Sem4 Summer/Project/gamedsl"
 # Auto-detected concurrency: 12
-# Dune context:
-#  { name = "default"
-#  ; kind = "default"
-#  ; profile = Dev
-#  ; merlin = true
-#  ; fdo_target_exe = None
-#  ; build_dir = In_build_dir "default"
-#  ; instrument_with = []
-#  }
-$ /Users/aaronjasonbaptist/.opam/5.4.0/bin/ocamlc.opt -config > /var/folders/nn/36pffhzx2nsdyw9_5rh63njh0000gn/T/dune_adc0ca_output
-$ (cd _build/default && /Users/aaronjasonbaptist/.opam/5.4.0/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I test/compiler/.test_lexer.eobjs/byte -I test/compiler/.test_lexer.eobjs/native -I /Users/aaronjasonbaptist/.opam/5.4.0/lib/ocaml/unix -I /Users/aaronjasonbaptist/.opam/5.4.0/lib/ounit2 -I /Users/aaronjasonbaptist/.opam/5.4.0/lib/ounit2/advanced -I /Users/aaronjasonbaptist/.opam/5.4.0/lib/seq -I /Users/aaronjasonbaptist/.opam/5.4.0/lib/stdlib-shims -I src/lexer/.gamedsl_lib.objs/byte -I src/lexer/.gamedsl_lib.objs/native -cmi-file test/compiler/.test_lexer.eobjs/byte/dune__exe__Test_lexer.cmi -no-alias-deps -opaque -o test/compiler/.test_lexer.eobjs/native/dune__exe__Test_lexer.cmx -c -impl test/compiler/test_lexer.ml)
-$ (cd _build/default && /Users/aaronjasonbaptist/.opam/5.4.0/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -o test/compiler/test_lexer.exe /Users/aaronjasonbaptist/.opam/5.4.0/lib/ocaml/unix/unix.cmxa /Users/aaronjasonbaptist/.opam/5.4.0/lib/stdlib-shims/stdlib_shims.cmxa /Users/aaronjasonbaptist/.opam/5.4.0/lib/ounit2/advanced/oUnitAdvanced.cmxa /Users/aaronjasonbaptist/.opam/5.4.0/lib/ounit2/oUnit.cmxa src/lexer/gamedsl_lib.cmxa test/compiler/.test_lexer.eobjs/native/dune__exe__Test_lexer.cmx)
-$ (cd _build/default/test/compiler && ./test_lexer.exe)
-> ....................................................................................
-> Ran: 84 tests in: 0.12 seconds.
-> OK
