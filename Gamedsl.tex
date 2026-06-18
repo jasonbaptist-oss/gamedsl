@@ -1,0 +1,1071 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{microtype}
+\usepackage{lmodern}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{mdframed}
+\usepackage{multicol}
+
+\geometry{top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm}
+
+% ── Colors ──────────────────────────────────────────────────
+\definecolor{kw}    {RGB}{83,  74,183}
+\definecolor{str}   {RGB}{29, 158,117}
+\definecolor{cmt}   {RGB}{136,135,128}
+\definecolor{bg}    {RGB}{245,245,248}
+\definecolor{border}{RGB}{200,200,210}
+\definecolor{red}   {RGB}{226, 75, 74}
+
+% ── BNF listing style ────────────────────────────────────────
+\lstdefinestyle{bnf}{
+  backgroundcolor  = \color{bg},
+  basicstyle       = \ttfamily\small,
+  commentstyle     = \color{cmt}\itshape,
+  morecomment      = [l]{--},
+  frame            = single,
+  rulecolor        = \color{border},
+  framesep         = 6pt,
+  xleftmargin      = 10pt,
+  xrightmargin     = 10pt,
+  breaklines       = true,
+  tabsize          = 2,
+  showstringspaces = false,
+  aboveskip        = 8pt,
+  belowskip        = 8pt,
+}
+
+% ── DSL example style ────────────────────────────────────────
+\lstdefinestyle{dsl}{
+  backgroundcolor  = \color{bg},
+  basicstyle       = \ttfamily\small,
+  commentstyle     = \color{cmt}\itshape,
+  morecomment      = [l]{//},
+  stringstyle      = \color{str},
+  morestring       = [b]",
+  frame            = single,
+  rulecolor        = \color{border},
+  framesep         = 6pt,
+  xleftmargin      = 10pt,
+  xrightmargin     = 10pt,
+  breaklines       = true,
+  tabsize          = 2,
+  showstringspaces = false,
+  aboveskip        = 8pt,
+  belowskip        = 8pt,
+}
+
+% ── Section style ────────────────────────────────────────────
+\titleformat{\section}
+  {\large\bfseries\color{kw}}{\thesection}{1em}{}[\titlerule]
+\titleformat{\subsection}
+  {\normalsize\bfseries\color{kw!80!black}}{\thesubsection}{1em}{}
+
+% ── Header / footer ──────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\textcolor{cmt}{\small GameDSL Language Reference}}
+\lhead{\textcolor{cmt}{\small \leftmark}}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ── Constraint box ───────────────────────────────────────────
+\newmdenv[
+  backgroundcolor  = bg,
+  linecolor        = border,
+  linewidth        = 1pt,
+  innerleftmargin  = 10pt,
+  innerrightmargin = 10pt,
+  innertopmargin   = 6pt,
+  innerbottommargin= 6pt,
+]{cbox}
+
+% ── Column type for keyword tables ───────────────────────────
+\newcolumntype{K}{>{\ttfamily}p{3.8cm}}
+\newcolumntype{M}{p{3.6cm}}
+\newcolumntype{U}{p{6.2cm}}
+
+% ════════════════════════════════════════════════════════════
+\begin{document}
+% ════════════════════════════════════════════════════════════
+
+% ── Title page ───────────────────────────────────────────────
+\begin{titlepage}
+\centering
+\vspace*{2.5cm}
+{\Huge\bfseries\color{kw} GameDSL \par}
+\vspace{0.4cm}
+{\large\color{cmt}
+  A Domain-Specific Language for 2D Grid Game Configuration\par}
+\vspace{1.8cm}
+\rule{0.55\textwidth}{0.4pt}\par
+\vspace{1cm}
+{\large\bfseries Language Reference, BNF Grammar, and Keyword Guide\par}
+\vspace{0.6cm}
+{\normalsize
+  GameDSL source files (\texttt{.gdsl}) are compiled by an OCaml
+  tokenizer and code generator into Python programs rendered
+  with \texttt{pygame}.\\[6pt]
+  The language defines players, monsters, abilities, obstacles,
+  win conditions, variables, control flow, loop expressions,
+  and functions in a concise, readable syntax.\par}
+\vspace{1.8cm}
+\rule{0.55\textwidth}{0.4pt}\par
+\vspace{0.8cm}
+{\normalsize \today\par}
+\vfill
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ════════════════════════════════════════════════════════════
+\section{Overview}
+% ════════════════════════════════════════════════════════════
+
+GameDSL is a declarative, configuration-first DSL for 2D grid games.
+The designer writes a single \texttt{.gdsl} file describing the entire
+game world.  An OCaml compiler tokenizes the file, builds an AST,
+validates semantic constraints, and emits a self-contained Python file
+using \texttt{pygame} for rendering and input.
+
+\subsection*{Compilation pipeline}
+\begin{center}
+\ttfamily
+.gdsl source \textrightarrow{} OCaml lexer \textrightarrow{}
+token list \textrightarrow{} OCaml parser \textrightarrow{}
+AST \textrightarrow{} OCaml codegen \textrightarrow{}
+Python + pygame
+\end{center}
+
+\subsection*{What a program defines}
+\begin{itemize}[noitemsep]
+  \item \textbf{world} --- grid dimensions and game duration
+  \item \textbf{player} --- health, spawn position, sprite, controls
+  \item \textbf{ability} --- active/passive/timed/kill-unlocked attacks and buffs,
+        with optional local variables and conditionals to compute field values
+  \item \textbf{monster} --- health, sprite, movement behaviour
+  \item \textbf{obstacle} --- impassable grid cells
+  \item \textbf{assign} --- attaches abilities to players or monsters
+  \item \textbf{spawn} --- creates a new player or monster instance at runtime
+  \item \textbf{win\_condition} --- what ends the game in victory
+  \item \textbf{variables, if, loop, fn} --- dynamic runtime logic
+\end{itemize}
+
+% ════════════════════════════════════════════════════════════
+\section{Program Structure}
+% ════════════════════════════════════════════════════════════
+
+\begin{lstlisting}[style=bnf]
+program ::= stmt*
+            world_block
+            player_block+
+            ability_block*
+            monster_block*
+            assign_stmt*
+            obstacle_block*
+            win_condition_block
+            stmt*
+\end{lstlisting}
+
+\begin{cbox}
+\texttt{world} must appear exactly once and must be the first block.\\
+At least one \texttt{player} block is required.\\
+Exactly one \texttt{win\_condition} block is required.\\
+\texttt{stmt*} before \texttt{world} holds variable and function declarations.\\
+\texttt{stmt*} after \texttt{win\_condition} holds runtime game logic.
+\end{cbox}
+
+% ════════════════════════════════════════════════════════════
+\section{Primitives and Lexical Tokens}
+% ════════════════════════════════════════════════════════════
+
+\begin{lstlisting}[style=bnf]
+-- identifiers and names
+STRING   ::= '"' [a-zA-Z][a-zA-Z0-9_]* '"'
+FILEPATH ::= '"' [a-zA-Z0-9_/\.-]+     '"'
+IDENT    ::= [a-zA-Z][a-zA-Z0-9_]*
+
+-- numeric
+INT      ::= [0-9]+
+FLOAT    ::= [0-9]+ "." [0-9]+
+NUMBER   ::= INT | FLOAT
+
+-- structured literals (lexed as single tokens)
+GRID_DIM ::= INT "x" INT      -- e.g. 20x15
+DURATION ::= INT "s"          -- e.g. 120s
+PERCENT  ::= INT "%"          -- e.g. 30%
+
+-- keyboard keys
+KEY ::= "W"  | "A"  | "S"  | "D"
+      | "E"  | "Q"  | "R"  | "F"
+      | "SPACE" | "ENTER"
+      | "UP" | "DOWN" | "LEFT" | "RIGHT"
+      | "AUTO"
+
+-- comments
+line_comment  ::= "//" [^\n]*
+block_comment ::= "/*" ([^*] | "*" [^/])* "*/"
+\end{lstlisting}
+
+\begin{cbox}
+\texttt{STRING} is for entity names --- letters and underscores only, no path separators.\\
+\texttt{FILEPATH} is for image paths --- allows \texttt{/}, \texttt{.}, \texttt{-}, \texttt{\textbackslash}.\\
+The lexer emits \texttt{GRID\_DIM}, \texttt{DURATION}, and \texttt{PERCENT} as single structured tokens.\\
+\texttt{AUTO} is the only key value that is a keyword --- it means the ability fires automatically and is \textbf{required} on monster abilities and \textbf{forbidden} on player abilities.\\
+\texttt{NUMBER} is accepted in all \texttt{expr} positions.\\
+\texttt{GRID\_DIM}, \texttt{count}, and \texttt{DURATION} require integer values only.\\
+Both \texttt{line\_comment} (\texttt{//} to end of line) and \texttt{block\_comment}
+(\texttt{/* ... */}, may span multiple lines) are stripped by the lexer before
+tokens are produced. An unterminated \texttt{/*} with no closing \texttt{*/} is a
+lexer error reported at the position of the opening \texttt{/*}.
+\end{cbox}
+
+% ════════════════════════════════════════════════════════════
+\section{Expressions}
+% ════════════════════════════════════════════════════════════
+
+\begin{lstlisting}[style=bnf]
+expr   ::= term (("+" | "-") term)*
+term   ::= factor (("*" | "/") factor)*
+factor ::= NUMBER
+         | IDENT
+         | STRING
+         | runtime_call
+         | field_read
+         | "(" expr ")"
+
+-- field access on any named entity
+entity_ref  ::= STRING | IDENT
+field_chain ::= ("." IDENT)+
+field_read  ::= entity_ref field_chain   -- e.g. Goblin.health
+
+-- runtime variable calls
+runtime_call ::= runtime_fn "(" call_arg ")"
+               | "players_killed"
+               | "players_alive"
+               | "time_elapsed"
+
+runtime_fn ::= "monsters_killed"
+             | "monster_count"
+             | "monster_health"
+             | "player_health"
+
+call_arg ::= STRING    -- literal name  e.g. "Goblin"
+           | IDENT     -- parameter var e.g. name
+\end{lstlisting}
+
+\begin{cbox}
+\texttt{field\_read} is valid on the right-hand side of expressions only.\\
+\texttt{entity\_ref} resolves to a known entity name or a function parameter.\\
+\texttt{call\_arg} may be an \texttt{IDENT} parameter when inside a function body;
+outside a function body it must be a \texttt{STRING}.\\
+Runtime variables are \textbf{read-only} --- they cannot appear on the left side of any assignment.\\
+Variables store numeric values only; conditions cannot be stored in variables.\\
+Assignment to a runtime variable name is a semantic error.
+\end{cbox}
+
+% ════════════════════════════════════════════════════════════
+\section{Conditions}
+% ════════════════════════════════════════════════════════════
+
+\begin{lstlisting}[style=bnf]
+condition  ::= or_cond
+or_cond    ::= and_cond  ("or"  and_cond)*
+and_cond   ::= not_cond  ("and" not_cond)*
+not_cond   ::= "not" not_cond
+             | "(" condition ")"
+             | comparison
+comparison ::= expr cmp_op expr
+cmp_op     ::= "==" | "!=" | ">=" | "<=" | ">" | "<"
+\end{lstlisting}
+
+% ════════════════════════════════════════════════════════════
+\section{Statements}
+% ════════════════════════════════════════════════════════════
+
+\begin{lstlisting}[style=bnf]
+stmt ::= var_decl
+       | var_assign
+       | field_override
+       | if_stmt
+       | loop_stmt
+       | fn_decl
+       | fn_call
+       | spawn_stmt
+
+var_decl       ::= "var" IDENT "=" expr
+var_assign     ::= IDENT "=" expr
+field_override ::= entity_ref field_chain "=" expr
+spawn_stmt     ::= "spawn" STRING ("position" ":" expr "," expr)?
+
+if_stmt ::= "if" "(" condition ")" "{" stmt* "}"
+            ("else" "{" stmt* "}")?
+\end{lstlisting}
+
+\begin{cbox}
+\texttt{spawn\_stmt} is documented in full in the Spawn Statement section.
+It is listed here because it is a valid top-level \texttt{stmt}.
+\end{cbox}
+
+% ════════════════════════════════════════════════════════════
+\section{Loop Statement}
+% ════════════════════════════════════════════════════════════
+
+\begin{lstlisting}[style=bnf]
+loop_stmt     ::= "loop" "{" loop_body "}"
+loop_body     ::= times_field actions_block
+times_field   ::= "times" ":" loop_count
+loop_count    ::= INT         -- fixed count, compile-time
+                | "infinite"  -- emits: while True
+                | condition   -- emits: while <condition>
+
+actions_block ::= "actions" "{" action+ "}"
+
+action ::= move_action
+         | wait_action
+         | if_action
+         | var_assign
+         | field_override
+         | loop_stmt
+         | spawn_stmt
+
+move_action ::= "move" ":" move_val
+move_val    ::= "up" | "down" | "left" | "right"
+              | "towards" STRING
+              | "random"
+
+wait_action ::= "wait"  ":" DURATION
+
+if_action   ::= "if" "(" condition ")" "{" action* "}"
+                ("else" "{" action* "}")?
+\end{lstlisting}
+
+\begin{cbox}
+\textbf{\texttt{times: INT}} --- loops that fixed number of times.\\
+\textbf{\texttt{times: infinite}} --- loops forever; emits \texttt{while True} in Python.\\
+\textbf{\texttt{times: condition}} --- loops while the condition holds; emits \texttt{while cond} in Python; may reference runtime variables.\\[4pt]
+\textbf{\texttt{move}} --- moves the entity one cell in the given direction. Only valid inside an \texttt{actions} block. If the target cell is an obstacle or out of bounds, the move is silently skipped.\\
+\textbf{\texttt{wait}} --- pauses the action sequence for the given duration before the next action fires. Without \texttt{wait}, all moves execute in the same game tick.
+\end{cbox}
+
+% ════════════════════════════════════════════════════════════
+\section{Functions}
+% ════════════════════════════════════════════════════════════
+
+\begin{lstlisting}[style=bnf]
+fn_decl    ::= "fn" IDENT "(" param_list? ")" "{" stmt* "}"
+param_list ::= IDENT ("," IDENT)*
+fn_call    ::= IDENT "(" arg_list? ")"
+arg_list   ::= expr ("," expr)*
+\end{lstlisting}
+
+\textbf{Example:}
+\begin{lstlisting}[style=dsl]
+fn scale(name, amount) {
+  name.health = name.health + amount * 1.5
+}
+
+fn give_ability(target) {
+  assign target abilities ["Sword"]
+}
+
+scale("Goblin", 20)
+give_ability("P1")
+\end{lstlisting}
+
+\begin{cbox}
+Function names must be unique and must not clash with any keyword.\\
+Parameters are local to the function body and do not leak outside.\\
+Recursion is not allowed.\\
+Nested \texttt{fn} declarations are not allowed.\\
+A parameter used as \texttt{entity\_ref} or \texttt{assign\_target}
+requires a \texttt{STRING} argument at every call site.\\
+Functions must be declared before they are called.\\
+Argument count must exactly match parameter count.
+\end{cbox}
+
+% ════════════════════════════════════════════════════════════
+\section{World Block}
+% ════════════════════════════════════════════════════════════
+
+\begin{lstlisting}[style=bnf]
+world_block     ::= "world" "{" world_body "}"
+world_body      ::= grid_size_field duration_field
+grid_size_field ::= "grid_size" ":" GRID_DIM
+duration_field  ::= "duration"  ":" DURATION
+\end{lstlisting}
+
+\begin{lstlisting}[style=dsl]
+world {
+  grid_size: 20x15
+  duration:  120s
+}
+\end{lstlisting}
+
+% ════════════════════════════════════════════════════════════
+\section{Player Block}
+% ════════════════════════════════════════════════════════════
+
+\begin{lstlisting}[style=bnf]
+player_block ::= "player" STRING "{" player_body "}"
+player_body  ::= health_field
+                 img_field?
+                 active_field?
+                 position_field?
+                 controls_block
+
+health_field   ::= "health"   ":" expr
+img_field      ::= "img"      ":" FILEPATH
+active_field   ::= "active"   ":" bool_val
+position_field ::= "position" ":" expr "," expr
+
+bool_val ::= "true" | "false"
+
+controls_block ::= "controls" "{" control_field+ "}"
+control_field  ::= up_field | down_field | left_field | right_field
+up_field    ::= "up"    ":" KEY
+down_field  ::= "down"  ":" KEY
+left_field  ::= "left"  ":" KEY
+right_field ::= "right" ":" KEY
+\end{lstlisting}
+
+\begin{lstlisting}[style=dsl]
+player "P1" {
+  health: 100
+  img: "assets/player1.png"
+  position: 0, 0
+  controls {
+    up: W  down: S  left: A  right: D
+  }
+}
+
+player "P2" {
+  health: 100
+  active: false      // not on the grid at game start
+  controls {
+    up: UP  down: DOWN  left: LEFT  right: RIGHT
+  }
+}
+\end{lstlisting}
+
+\begin{cbox}
+At least one \texttt{player} block is required.\\
+All four control fields (\texttt{up, down, left, right}) are required.\\
+No two keys across all players and all player abilities may be the same.\\
+\texttt{img}, \texttt{active}, and \texttt{position} are optional.\\
+\texttt{active} defaults to \texttt{true}. A player with \texttt{active: true}
+(or no \texttt{active} field at all) is placed on the grid at game start;
+if \texttt{position} is also omitted, the runtime spawns that player
+randomly.\\
+\texttt{active: false} declares the player --- their \texttt{health},
+\texttt{controls}, and assigned abilities --- without placing them on
+the grid at game start. Such a player is brought into the game later
+with a \texttt{spawn\_stmt} (see Spawn Statement section), e.g. a
+second player joining mid-match or a player reserved for a later wave.\\
+A \texttt{player} block always defines exactly one player and has no
+\texttt{count} field, unlike \texttt{monster}.
+\end{cbox}
+
+% ════════════════════════════════════════════════════════════
+\section{Ability Block}
+% ════════════════════════════════════════════════════════════
+
+\begin{lstlisting}[style=bnf]
+ability_block ::= "ability" STRING "{" ability_body "}"
+ability_body  ::= type_decl img_field? ability_stmt*
+type_decl     ::= "type" ":" ability_type
+ability_type  ::= "active" | "permanent" | "timed" | "kill_unlocked"
+
+ability_stmt ::= ability_field
+               | var_decl
+               | var_assign
+               | if_stmt
+
+ability_field ::=
+    "damage"            ":" expr
+  | "range"             ":" expr
+  | "shape"             ":" shape_val
+  | "spread"            ":" expr
+  | "key"               ":" KEY
+  | "img"               ":" FILEPATH
+  | "activates_at"      ":" DURATION
+  | "required_kills"    ":" expr
+  | "damage_multiplier" ":" expr
+  | "damage_reduction"  ":" PERCENT
+  | "health_regen"      ":" expr
+  | "speed_boost"       ":" expr
+
+shape_val ::= "manhattan" | "chebyshev" | "directional"
+\end{lstlisting}
+
+\textbf{Example --- local variable used to compute a field:}
+\begin{lstlisting}[style=dsl]
+ability "Rage" {
+  type: kill_unlocked
+  required_kills: 5
+  var boost = 10
+  if (boost > 5) {
+    boost = boost * 2
+  }
+  damage_multiplier: boost
+}
+\end{lstlisting}
+
+\begin{cbox}
+\textbf{active} requires \texttt{key, damage, range, shape}.
+  Optional \texttt{spread} only if \texttt{shape: directional}.\\
+\textbf{permanent} requires at least one of
+  \texttt{damage\_reduction, health\_regen, speed\_boost, damage\_multiplier}.\\
+\textbf{timed} requires \texttt{key, damage, range, shape, activates\_at}.
+  Optional \texttt{spread} only if \texttt{shape: directional}.\\
+\textbf{kill\_unlocked} requires \texttt{key, required\_kills} and at least one of
+  \texttt{damage, damage\_multiplier}. Optional \texttt{range, shape, spread}.\\
+\texttt{spread} is only valid when \texttt{shape: directional}.\\
+\texttt{AUTO} is forbidden on player abilities and required on monster abilities.\\[4pt]
+\texttt{ability\_stmt} allows local variable declarations, assignments, and
+conditionals to be mixed in with \texttt{ability\_field} entries so a field
+value can be computed rather than hardcoded.\\
+\texttt{fn\_decl}, \texttt{fn\_call}, \texttt{loop\_stmt}, and \texttt{spawn\_stmt}
+are deliberately \textbf{not} permitted inside an ability body --- an ability
+should only compute its own field values, not spawn entities, declare
+functions, or run movement loops.
+\end{cbox}
+
+% ════════════════════════════════════════════════════════════
+\section{Monster Block}
+% ════════════════════════════════════════════════════════════
+
+\begin{lstlisting}[style=bnf]
+monster_block ::= "monster" STRING "{" monster_body "}"
+monster_body  ::= monster_field+
+
+monster_field ::= health_field
+                | img_field
+                | movement_field
+                | count_field
+                | position_field
+
+health_field   ::= "health"   ":" expr
+img_field      ::= "img"      ":" FILEPATH
+count_field    ::= "count"    ":" expr
+position_field ::= "position" ":" expr "," expr
+
+movement_field ::= "movement" ":" movement_val
+                 | "movement" ":" loop_stmt
+
+movement_val ::= "towards" STRING
+               | "random"
+               | "stationary"
+\end{lstlisting}
+
+\begin{lstlisting}[style=dsl]
+monster "Goblin" {
+  health: 50
+  img: "assets/goblin.png"
+  movement: towards "P1"
+  count: 3
+}
+
+monster "Guard" {
+  health: 80
+  movement: loop {
+    times: infinite
+    actions {
+      move: right
+      move: right
+      wait: 2s
+      move: left
+      move: left
+      wait: 2s
+    }
+  }
+  count: 2
+}
+
+monster "Boss" {
+  health: 500
+  movement: stationary
+  count: 0          // declared but not present at game start
+}
+\end{lstlisting}
+
+\begin{cbox}
+\texttt{health}, \texttt{movement}, and \texttt{count} are required.\\
+\texttt{position} is optional; if omitted the runtime spawns randomly.\\
+\texttt{towards STRING} must match a defined player name.\\
+\texttt{count} must be an integer $\geq 0$.\\
+\texttt{count: 0} declares the monster type --- its health, movement,
+and assigned abilities --- without placing any instances on the grid
+at game start. Such a monster type can later be brought into the game
+with a \texttt{spawn\_stmt} (see Spawn Statement section), which is
+useful for bosses, scripted waves, or any monster the designer wants
+to introduce mid-game rather than at the start.\\
+Monster attack behaviour is defined entirely through assigned abilities.
+\end{cbox}
+
+% ════════════════════════════════════════════════════════════
+\section{Obstacle Block}
+% ════════════════════════════════════════════════════════════
+
+\begin{lstlisting}[style=bnf]
+obstacle_block ::= "obstacle" STRING "{" obstacle_body "}"
+obstacle_body  ::= position_field size_field? img_field?
+position_field ::= "position" ":" expr "," expr
+size_field     ::= "size"     ":" GRID_DIM
+img_field      ::= "img"      ":" FILEPATH
+\end{lstlisting}
+
+\begin{cbox}
+\texttt{position} is required.\\
+\texttt{size} defaults to \texttt{1x1} if omitted.\\
+Position + size must stay within grid bounds.\\
+No two obstacles may overlap each other or player/monster spawn positions.\\
+Obstacles have infinite health and cannot be destroyed.
+\end{cbox}
+
+% ════════════════════════════════════════════════════════════
+\section{Assign Statement}
+% ════════════════════════════════════════════════════════════
+
+\begin{lstlisting}[style=bnf]
+assign_stmt    ::= "assign" assign_target "abilities"
+                   "[" ability_list "]"
+assign_target  ::= STRING | IDENT
+ability_list   ::= assign_ability ("," assign_ability)*
+assign_ability ::= STRING | IDENT
+\end{lstlisting}
+
+\begin{lstlisting}[style=dsl]
+assign "P1"     abilities ["Sword", "Shield", "Rage"]
+assign "Goblin" abilities ["Bite"]
+\end{lstlisting}
+
+\begin{cbox}
+\texttt{assign\_target} must resolve to a defined player or monster name.\\
+All ability names must match defined abilities.\\
+No ability may be assigned to the same entity twice.\\
+If the target is a player: all ability \texttt{key} values must not be \texttt{AUTO}.\\
+If the target is a monster: all ability \texttt{key} values must be \texttt{AUTO}.\\
+When \texttt{assign\_target} is an \texttt{IDENT} parameter (inside a function),
+every call site must pass a \texttt{STRING} matching a defined entity.
+\end{cbox}
+
+% ════════════════════════════════════════════════════════════
+\section{Spawn Statement}
+% ════════════════════════════════════════════════════════════
+
+\begin{lstlisting}[style=bnf]
+spawn_stmt ::= "spawn" STRING ("position" ":" expr "," expr)?
+\end{lstlisting}
+
+\begin{lstlisting}[style=dsl]
+spawn "Goblin" position: 5, 5
+spawn "P2"     position: 0, 0
+spawn "Goblin"                 // no position -> random free cell
+\end{lstlisting}
+
+\begin{cbox}
+\texttt{spawn} creates a new instance of a player or monster \textbf{at runtime},
+as opposed to \texttt{player}/\texttt{monster} blocks which define entities at
+compile time.\\
+The \texttt{STRING} is the entity name only --- there is no need to repeat
+\texttt{player} or \texttt{monster} before it. The compiler resolves which
+kind of entity it is by looking up the name against the player and monster
+symbol tables, exactly like \texttt{assign\_target} does.\\
+\texttt{position} reuses the existing \texttt{position} field syntax, so no
+new field keyword was introduced --- only the leading \texttt{spawn} keyword
+is new.\\
+\texttt{position} is \textbf{optional}. If omitted, the runtime spawns the
+entity at a random free cell --- any cell within grid bounds that is not
+an obstacle, not already occupied, and not overlapping another entity's
+spawn position that tick.\\
+If \texttt{position} is given, it must be within grid bounds and must not
+overlap an existing obstacle cell.\\
+If the \texttt{STRING} matches a monster name, a new instance of that
+monster type is spawned. If it matches a player name, that player is
+spawned (only valid if not already alive).\\
+A monster declared with \texttt{count: 0} (see Monster Block section)
+has no instances on the grid at game start --- \texttt{spawn\_stmt} is
+the mechanism that brings such a monster into the game when the
+designer chooses, e.g. a boss that appears after a timer or kill count.\\
+A player declared with \texttt{active: false} (see Player Block section)
+is likewise absent from the grid at game start; \texttt{spawn\_stmt} brings
+that player in later, e.g. a second player joining mid-match.\\
+\texttt{spawn\_stmt} is valid as a top-level \texttt{stmt} and as an
+\texttt{action} inside a \texttt{loop}, so monsters or waves of players
+can be spawned on a timer or condition.
+\end{cbox}
+
+% ════════════════════════════════════════════════════════════
+\section{Win Condition Block}
+% ════════════════════════════════════════════════════════════
+
+\begin{lstlisting}[style=bnf]
+win_condition_block ::= "win_condition" "{" win_field+ "}"
+win_field ::= survive_field
+            | kill_monsters_field
+            | kill_players_field
+            | elimination_field
+
+survive_field       ::= "survive"       ":" DURATION
+kill_monsters_field ::= "kill_monsters" ":" condition
+kill_players_field  ::= "kill_players"  ":" condition
+elimination_field   ::= "elimination"   ":" condition
+\end{lstlisting}
+
+\begin{lstlisting}[style=dsl]
+win_condition {
+  kill_monsters: monsters_killed("Goblin") >= 10
+  survive: 120s
+}
+\end{lstlisting}
+
+\begin{cbox}
+Exactly one \texttt{win\_condition} block is required.\\
+At least one \texttt{win\_field} is required.\\
+Multiple win fields are evaluated independently each tick.
+The first one satisfied ends the game.
+\end{cbox}
+
+% ════════════════════════════════════════════════════════════
+\section{Complete BNF Grammar}
+% ════════════════════════════════════════════════════════════
+
+\begin{lstlisting}[style=bnf]
+program ::= stmt* world_block player_block+ ability_block*
+            monster_block* assign_stmt* obstacle_block*
+            win_condition_block stmt*
+
+-- PRIMITIVES
+STRING   ::= '"' [a-zA-Z][a-zA-Z0-9_]* '"'
+FILEPATH ::= '"' [a-zA-Z0-9_/\.-]+     '"'
+IDENT    ::= [a-zA-Z][a-zA-Z0-9_]*
+INT      ::= [0-9]+
+FLOAT    ::= [0-9]+ "." [0-9]+
+NUMBER   ::= INT | FLOAT
+GRID_DIM ::= INT "x" INT
+DURATION ::= INT "s"
+PERCENT  ::= INT "%"
+KEY      ::= "W"|"A"|"S"|"D"|"E"|"Q"|"R"|"F"
+           | "SPACE"|"ENTER"|"UP"|"DOWN"|"LEFT"|"RIGHT"|"AUTO"
+line_comment  ::= "//" [^\n]*
+block_comment ::= "/*" ([^*] | "*" [^/])* "*/"
+
+-- EXPRESSIONS
+expr   ::= term (("+" | "-") term)*
+term   ::= factor (("*" | "/") factor)*
+factor ::= NUMBER | IDENT | STRING | runtime_call
+         | field_read | "(" expr ")"
+entity_ref  ::= STRING | IDENT
+field_chain ::= ("." IDENT)+
+field_read  ::= entity_ref field_chain
+runtime_call ::= runtime_fn "(" call_arg ")"
+               | "players_killed" | "players_alive"
+               | "time_elapsed"
+runtime_fn ::= "monsters_killed" | "monster_count"
+             | "monster_health"  | "player_health"
+call_arg ::= STRING | IDENT
+
+-- CONDITIONS
+condition ::= or_cond
+or_cond   ::= and_cond ("or"  and_cond)*
+and_cond  ::= not_cond ("and" not_cond)*
+not_cond  ::= "not" not_cond | "(" condition ")" | comparison
+comparison ::= expr cmp_op expr
+cmp_op ::= "==" | "!=" | ">=" | "<=" | ">" | "<"
+
+-- STATEMENTS
+stmt ::= var_decl | var_assign | field_override
+       | if_stmt  | loop_stmt  | fn_decl | fn_call | spawn_stmt
+var_decl       ::= "var" IDENT "=" expr
+var_assign     ::= IDENT "=" expr
+field_override ::= entity_ref field_chain "=" expr
+spawn_stmt     ::= "spawn" STRING ("position" ":" expr "," expr)?
+if_stmt ::= "if" "(" condition ")" "{" stmt* "}"
+            ("else" "{" stmt* "}")?
+
+-- LOOP
+loop_stmt     ::= "loop" "{" times_field actions_block "}"
+times_field   ::= "times" ":" (INT | "infinite" | condition)
+actions_block ::= "actions" "{" action+ "}"
+action ::= "move" ":" move_val
+         | "wait" ":" DURATION
+         | "if" "(" condition ")" "{" action* "}"
+           ("else" "{" action* "}")?
+         | var_assign | field_override | loop_stmt | spawn_stmt
+move_val ::= "up"|"down"|"left"|"right"
+           | "towards" STRING | "random"
+
+-- FUNCTIONS
+fn_decl    ::= "fn" IDENT "(" (IDENT ("," IDENT)*)? ")" "{" stmt* "}"
+fn_call    ::= IDENT "(" (expr ("," expr)*)? ")"
+
+-- WORLD
+world_block ::= "world" "{" "grid_size" ":" GRID_DIM
+                            "duration"  ":" DURATION "}"
+
+-- PLAYER
+player_block ::= "player" STRING "{"
+                   "health" ":" expr
+                   ("img" ":" FILEPATH)?
+                   ("position" ":" expr "," expr)?
+                   "controls" "{"
+                     "up" ":" KEY  "down" ":" KEY
+                     "left" ":" KEY  "right" ":" KEY
+                   "}" "}"
+
+-- ABILITY
+ability_block ::= "ability" STRING "{"
+                    "type" ":" ability_type
+                    ("img" ":" FILEPATH)?
+                    ability_stmt* "}"
+ability_type ::= "active"|"permanent"|"timed"|"kill_unlocked"
+ability_stmt ::= ability_field | var_decl | var_assign | if_stmt
+ability_field ::=
+    "damage" ":" expr           | "range"  ":" expr
+  | "shape"  ":" shape_val      | "spread" ":" expr
+  | "key"    ":" KEY            | "activates_at" ":" DURATION
+  | "required_kills" ":" expr   | "damage_multiplier" ":" expr
+  | "damage_reduction" ":" PERCENT
+  | "health_regen" ":" expr     | "speed_boost" ":" expr
+shape_val ::= "manhattan" | "chebyshev" | "directional"
+
+-- ASSIGN
+assign_stmt ::= "assign" (STRING|IDENT) "abilities"
+                "[" (STRING|IDENT) ("," (STRING|IDENT))* "]"
+
+-- SPAWN
+spawn_stmt ::= "spawn" STRING ("position" ":" expr "," expr)?
+
+-- OBSTACLE
+obstacle_block ::= "obstacle" STRING "{"
+                     "position" ":" expr "," expr
+                     ("size" ":" GRID_DIM)?
+                     ("img"  ":" FILEPATH)? "}"
+
+-- MONSTER
+monster_block ::= "monster" STRING "{" monster_field+ "}"
+monster_field ::= "health"   ":" expr
+                | "img"      ":" FILEPATH
+                | "count"    ":" expr
+                | "position" ":" expr "," expr
+                | "movement" ":" (movement_val | loop_stmt)
+movement_val ::= "towards" STRING | "random" | "stationary"
+
+-- WIN CONDITION
+win_condition_block ::= "win_condition" "{" win_field+ "}"
+win_field ::= "survive"       ":" DURATION
+            | "kill_monsters" ":" condition
+            | "kill_players"  ":" condition
+            | "elimination"   ":" condition
+\end{lstlisting}
+
+% ════════════════════════════════════════════════════════════
+\section{Keyword Reference}
+% ════════════════════════════════════════════════════════════
+
+\subsection{World}
+\begin{longtable}{KMU}
+\toprule
+\normalfont\textbf{Keyword} & \textbf{Meaning} & \textbf{Use} \\
+\midrule
+world      & world block      & opens the world configuration block \\
+grid\_size & grid dimensions  & \texttt{grid\_size: 20x15} \\
+duration   & game length      & \texttt{duration: 120s} \\
+\bottomrule
+\end{longtable}
+
+\subsection{Player}
+\begin{longtable}{KMU}
+\toprule
+\normalfont\textbf{Keyword} & \textbf{Meaning} & \textbf{Use} \\
+\midrule
+player   & player block      & \texttt{player "P1" \{ ... \}} \\
+health   & starting hp       & \texttt{health: 100} \\
+img      & sprite image      & \texttt{img: "assets/p1.png"} \\
+position & spawn cell        & \texttt{position: 0, 0} (optional) \\
+controls & keybinding block  & opens controls sub-block \\
+up       & move-up key       & \texttt{up: W} \\
+down     & move-down key     & \texttt{down: S} \\
+left     & move-left key     & \texttt{left: A} \\
+right    & move-right key    & \texttt{right: D} \\
+\bottomrule
+\end{longtable}
+
+\subsection{Ability}
+\begin{longtable}{KMU}
+\toprule
+\normalfont\textbf{Keyword} & \textbf{Meaning} & \textbf{Use} \\
+\midrule
+ability            & ability block          & \texttt{ability "Sword" \{ ... \}} \\
+type               & ability category       & \texttt{type: active} \\
+active             & key-triggered attack   & \texttt{type: active} \\
+permanent          & always-on passive      & \texttt{type: permanent} \\
+timed              & unlocks after N secs   & \texttt{type: timed} \\
+kill\_unlocked     & unlocks after N kills  & \texttt{type: kill\_unlocked} \\
+damage             & hp removed per hit     & \texttt{damage: 30} \\
+range              & reach in cells         & \texttt{range: 2} \\
+shape              & attack zone shape      & \texttt{shape: manhattan} \\
+spread             & directional cone width & \texttt{spread: 1} \\
+key                & keyboard trigger       & \texttt{key: SPACE} \\
+img                & ability icon           & \texttt{img: "assets/sword.png"} \\
+activates\_at      & time before unlock     & \texttt{activates\_at: 30s} \\
+required\_kills    & kills before unlock    & \texttt{required\_kills: 5} \\
+damage\_multiplier & scale outgoing damage  & \texttt{damage\_multiplier: 2} \\
+damage\_reduction  & reduce incoming damage & \texttt{damage\_reduction: 30\%} \\
+health\_regen      & hp restored per second & \texttt{health\_regen: 5} \\
+speed\_boost       & extra cells per move   & \texttt{speed\_boost: 1} \\
+manhattan          & diamond attack zone    & \texttt{shape: manhattan} \\
+chebyshev          & square attack zone     & \texttt{shape: chebyshev} \\
+directional        & cone in facing dir     & \texttt{shape: directional} \\
+\bottomrule
+\end{longtable}
+
+\subsection{Monster}
+\begin{longtable}{KMU}
+\toprule
+\normalfont\textbf{Keyword} & \textbf{Meaning} & \textbf{Use} \\
+\midrule
+monster    & monster block       & \texttt{monster "Goblin" \{ ... \}} \\
+health     & starting hp         & \texttt{health: 50} \\
+img        & sprite image        & \texttt{img: "assets/goblin.png"} \\
+movement   & movement type       & \texttt{movement: random} \\
+count      & instances to spawn  & \texttt{count: 3} \\
+position   & fixed spawn cell    & \texttt{position: 10, 10} \\
+towards    & chase named player  & \texttt{movement: towards "P1"} \\
+random     & random movement     & \texttt{movement: random} \\
+stationary & never moves         & \texttt{movement: stationary} \\
+\bottomrule
+\end{longtable}
+
+\subsection{Obstacle}
+\begin{longtable}{KMU}
+\toprule
+\normalfont\textbf{Keyword} & \textbf{Meaning} & \textbf{Use} \\
+\midrule
+obstacle & obstacle block    & \texttt{obstacle "Wall" \{ ... \}} \\
+position & top-left cell     & \texttt{position: 3, 5} \\
+size     & width and height  & \texttt{size: 3x1} (default \texttt{1x1}) \\
+img      & sprite image      & \texttt{img: "assets/wall.png"} \\
+\bottomrule
+\end{longtable}
+
+\subsection{Assign}
+\begin{longtable}{KMU}
+\toprule
+\normalfont\textbf{Keyword} & \textbf{Meaning} & \textbf{Use} \\
+\midrule
+assign    & assign abilities  & \texttt{assign "P1" abilities [...]} \\
+abilities & marks the list    & \texttt{abilities ["Sword", "Bite"]} \\
+\bottomrule
+\end{longtable}
+
+\subsection{Spawn}
+\begin{longtable}{KMU}
+\toprule
+\normalfont\textbf{Keyword} & \textbf{Meaning} & \textbf{Use} \\
+\midrule
+spawn & runtime instantiation of a player or monster & \texttt{spawn "Goblin" position: 5, 5} \\
+\bottomrule
+\end{longtable}
+
+\subsection{Win Condition}
+\begin{longtable}{KMU}
+\toprule
+\normalfont\textbf{Keyword} & \textbf{Meaning} & \textbf{Use} \\
+\midrule
+win\_condition  & victory block        & opens win condition block \\
+survive         & survive for duration & \texttt{survive: 120s} \\
+kill\_monsters  & kill enough monsters & \texttt{kill\_monsters: monsters\_killed("G") >= 10} \\
+kill\_players   & kill enough players  & \texttt{kill\_players: players\_killed >= 1} \\
+elimination     & custom condition     & \texttt{elimination: players\_alive == 1} \\
+\bottomrule
+\end{longtable}
+
+\subsection{Variables, Control Flow, Functions}
+\begin{longtable}{KMU}
+\toprule
+\normalfont\textbf{Keyword} & \textbf{Meaning} & \textbf{Use} \\
+\midrule
+var  & declare variable    & \texttt{var x = 10} \\
+if   & conditional branch  & \texttt{if (x > 5) \{ ... \}} \\
+else & alternative branch  & \texttt{else \{ ... \}} \\
+fn   & function declaration & \texttt{fn boost(name, amt) \{ ... \}} \\
+\bottomrule
+\end{longtable}
+
+\subsection{Loop}
+\begin{longtable}{KMU}
+\toprule
+\normalfont\textbf{Keyword} & \textbf{Meaning} & \textbf{Use} \\
+\midrule
+loop     & repeating block       & opens a loop block \\
+times    & iteration specifier   & \texttt{times: 3}, \texttt{times: infinite}, \texttt{times: x > 0} \\
+infinite & loop forever          & \texttt{times: infinite} \\
+actions  & action sequence       & opens the actions sub-block \\
+move     & move entity one cell  & \texttt{move: right}, \texttt{move: towards "P1"} \\
+wait     & pause action sequence & \texttt{wait: 2s} \\
+\bottomrule
+\end{longtable}
+
+\subsection{Operators and Punctuation}
+\begin{longtable}{>{\ttfamily}p{2.2cm} p{3cm} p{8.3cm}}
+\toprule
+\normalfont\textbf{Symbol} & \textbf{Name} & \textbf{Use} \\
+\midrule
+and   & logical and    & \texttt{x > 1 and y < 5} \\
+or    & logical or     & \texttt{x > 1 or y < 5} \\
+not   & logical not    & \texttt{not (x > 1)} \\
+==    & equal          & comparison in conditions \\
+!=    & not equal      & comparison in conditions \\
+>=    & greater/equal  & comparison in conditions \\
+<=    & less/equal     & comparison in conditions \\
+>     & greater than   & comparison in conditions \\
+<     & less than      & comparison in conditions \\
++     & addition       & arithmetic in expressions \\
+-     & subtraction    & arithmetic in expressions \\
+*     & multiplication & arithmetic in expressions \\
+/     & division       & arithmetic in expressions \\
+\{\ \}  & braces       & open/close every block body \\
+{[}\ {]} & brackets    & open/close ability list in assign \\
+(\ )  & parentheses    & conditions, function calls, grouping \\
+:     & colon          & separates field name from value \\
+,     & comma          & separates list items and coordinates \\
+.     & dot            & field access --- \texttt{Goblin.health} \\
+=     & assign op      & variable and field assignment \\
+x     & times          & grid dimension separator --- \texttt{20x15} \\
+s     & seconds suffix & duration --- \texttt{120s}, \texttt{2s} \\
+\%    & percent suffix & damage reduction --- \texttt{30\%} \\
+//    & line comment   & ignored to end of line \\
+/* */ & block comment  & ignored, may span multiple lines \\
+\bottomrule
+\end{longtable}
+
+\subsection{Runtime Variables}
+\begin{longtable}{>{\ttfamily}p{5.2cm} p{8.3cm}}
+\toprule
+\normalfont\textbf{Identifier} & \textbf{Meaning} \\
+\midrule
+monsters\_killed("X") & cumulative kill count of monster type X \\
+monster\_count("X")   & current alive count of monster type X \\
+monster\_health("X")  & health of first living instance of X \\
+player\_health("P")   & current health of player P \\
+players\_killed       & total players killed so far \\
+players\_alive        & total players currently alive \\
+time\_elapsed         & seconds elapsed since game started \\
+\bottomrule
+\end{longtable}
+
+\end{document}
