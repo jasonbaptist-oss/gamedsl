@@ -1,0 +1,95 @@
+# ==========================================
+# OCAML & DUNE BUILD SYSTEM
+# ==========================================
+# Dune generated files
+_build/
+*.install
+
+# Merlin (IDE autocomplete / typechecking)
+.merlin
+*.merlin
+
+# OCaml compiled object files and binaries (safeguard)
+*.annot
+*.cmo
+*.cma
+*.cmi
+*.a
+*.o
+*.cmx
+*.cmxs
+*.cmxa
+*.obj
+*.lib
+*.dll
+*.exe
+*.out
+*.opt
+
+# Opam local switches
+_opam/
+
+# ==========================================
+# PYTHON & PYGAME RUNTIME
+# ==========================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Testing and coverage tools (if added later)
+.pytest_cache/
+.tox/
+.coverage
+coverage.xml
+htmlcov/
+
+# ==========================================
+# EDITORS & IDEs
+# ==========================================
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IntelliJ / PyCharm
+.idea/
+*.iml
+
+# Vim / Emacs backup and swap files
+*~
+*.swp
+*.swo
+\#*\#
+.\#*
+
+# ==========================================
+# OPERATING SYSTEM SPECIFIC
+# ==========================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk

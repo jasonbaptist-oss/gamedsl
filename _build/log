@@ -1,0 +1,7 @@
+# dune init project gamedsl .
+# OCAMLPARAM: unset
+# Shared cache: enabled-except-user-rules
+# Shared cache location: /Users/aaronjasonbaptist/.cache/dune/db
+# Workspace root: "/Users/aaronjasonbaptist/Documents/IIT
+# Kharagpur/Academic/Sem4 Summer/Project/gamedsl"
+# Auto-detected concurrency: 12

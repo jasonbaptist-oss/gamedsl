@@ -1,0 +1,4 @@
+(executable
+ (public_name gamedsl)
+ (name main)
+ (libraries gamedsl))
