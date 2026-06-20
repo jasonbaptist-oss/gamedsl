@@ -1,0 +1,11 @@
+lib: [
+  "_build/install/default/lib/gamedsl/META"
+  "_build/install/default/lib/gamedsl/dune-package"
+  "_build/install/default/lib/gamedsl/opam"
+]
+bin: [
+  "_build/install/default/bin/gamedsl"
+]
+doc: [
+  "_build/install/default/doc/gamedsl/README.md"
+]

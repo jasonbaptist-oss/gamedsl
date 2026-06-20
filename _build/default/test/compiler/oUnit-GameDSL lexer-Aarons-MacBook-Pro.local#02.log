@@ -1,126 +1,123 @@
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:0:Stream operations:1:peek eof.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:0:Stream operations:1:peek eof is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:0:Stream operations:1:peek eof.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:0:Stream operations:3:peek2 normal.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:0:Stream operations:3:peek2 normal is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:0:Stream operations:3:peek2 normal.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:0:Stream operations:5:peek2 eof.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:0:Stream operations:5:peek2 eof is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:0:Stream operations:5:peek2 eof.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:0:Stream operations:7:advance updates col.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:0:Stream operations:7:advance updates col is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:0:Stream operations:7:advance updates col.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:0:Stream operations:8:advance newline resets col.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:0:Stream operations:8:advance newline resets col is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:0:Stream operations:8:advance newline resets col.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:0:Stream operations:11:is_eof empty.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:0:Stream operations:11:is_eof empty is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:0:Stream operations:11:is_eof empty.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:0:Stream operations:12:is_eof not empty.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:0:Stream operations:12:is_eof not empty is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:0:Stream operations:12:is_eof not empty.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:1:Skip whitespace and comments:0:skip spaces.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:1:Skip whitespace and comments:0:skip spaces is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:1:Skip whitespace and comments:0:skip spaces.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:1:Skip whitespace and comments:2:skip line comment.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:1:Skip whitespace and comments:2:skip line comment is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:1:Skip whitespace and comments:2:skip line comment.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:1:Skip whitespace and comments:5:skip unterminated block comment.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:1:Skip whitespace and comments:5:skip unterminated block comment is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:1:Skip whitespace and comments:5:skip unterminated block comment.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:2:lex_number:0:int.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:2:lex_number:0:int is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:2:lex_number:0:int.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:2:lex_number:3:float.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:2:lex_number:3:float is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:2:lex_number:3:float.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:2:lex_number:4:float leading zero.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:2:lex_number:4:float leading zero is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:2:lex_number:4:float leading zero.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:2:lex_number:7:duration.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:2:lex_number:7:duration is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:2:lex_number:7:duration.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:2:lex_number:8:duration one.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:2:lex_number:8:duration one is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:2:lex_number:8:duration one.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:2:lex_number:11:s not consumed in word.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:2:lex_number:11:s not consumed in word is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:2:lex_number:11:s not consumed in word.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:3:lex_string:1:underscore.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:3:lex_string:1:underscore is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:3:lex_string:1:underscore.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:3:lex_string:3:filepath slash.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:3:lex_string:3:filepath slash is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:3:lex_string:3:filepath slash.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:3:lex_string:4:filepath dot.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:3:lex_string:4:filepath dot is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:3:lex_string:4:filepath dot.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:3:lex_string:7:newline inside.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:3:lex_string:7:newline inside is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:3:lex_string:7:newline inside.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:4:lex_ident / lookup / is_key:0:keyword world.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:4:lex_ident / lookup / is_key:0:keyword world is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:4:lex_ident / lookup / is_key:0:keyword world.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:4:lex_ident / lookup / is_key:3:keyword true.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:4:lex_ident / lookup / is_key:3:keyword true is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:4:lex_ident / lookup / is_key:3:keyword true.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:4:lex_ident / lookup / is_key:5:keyword spawn.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:4:lex_ident / lookup / is_key:5:keyword spawn is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:4:lex_ident / lookup / is_key:5:keyword spawn.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:4:lex_ident / lookup / is_key:6:keyword infinite.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:4:lex_ident / lookup / is_key:6:keyword infinite is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:4:lex_ident / lookup / is_key:6:keyword infinite.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:4:lex_ident / lookup / is_key:8:ident underscore.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:4:lex_ident / lookup / is_key:8:ident underscore is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:4:lex_ident / lookup / is_key:8:ident underscore.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:4:lex_ident / lookup / is_key:10:key AUTO.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:4:lex_ident / lookup / is_key:10:key AUTO is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:4:lex_ident / lookup / is_key:10:key AUTO.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:4:lex_ident / lookup / is_key:12:key UP.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:4:lex_ident / lookup / is_key:12:key UP is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:4:lex_ident / lookup / is_key:12:key UP.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:5:lex_op:1:rbrace.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:5:lex_op:1:rbrace is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:5:lex_op:1:rbrace.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:5:lex_op:3:assign.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:5:lex_op:3:assign is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:5:lex_op:3:assign.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:5:lex_op:5:geq.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:5:lex_op:5:geq is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:5:lex_op:5:geq.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:5:lex_op:7:gt.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:5:lex_op:7:gt is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:5:lex_op:7:gt.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:5:lex_op:9:unexpected char.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:5:lex_op:9:unexpected char is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:5:lex_op:9:unexpected char.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:6:tokenize pipeline:0:empty.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:6:tokenize pipeline:0:empty is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:6:tokenize pipeline:0:empty.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:6:tokenize pipeline:2:world block.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:6:tokenize pipeline:2:world block is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:6:tokenize pipeline:2:world block.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:6:tokenize pipeline:4:spawn no position.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:6:tokenize pipeline:4:spawn no position is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:6:tokenize pipeline:4:spawn no position.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:6:tokenize pipeline:7:active true.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:6:tokenize pipeline:7:active true is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:6:tokenize pipeline:7:active true.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:6:tokenize pipeline:9:float expr.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:6:tokenize pipeline:9:float expr is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:6:tokenize pipeline:9:float expr.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:7:token_to_string:1:int lit.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:7:token_to_string:1:int lit is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:7:token_to_string:1:int lit.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:7:token_to_string:3:duration.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:7:token_to_string:3:duration is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:7:token_to_string:3:duration.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:7:token_to_string:5:true.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:7:token_to_string:5:true is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:7:token_to_string:5:true.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:7:token_to_string:7:spawn.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:7:token_to_string:7:spawn is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:7:token_to_string:7:spawn.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:7:token_to_string:9:filepath.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:7:token_to_string:9:filepath is successful.
-2026-06-20T18:35:48+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:7:token_to_string:9:filepath.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:0:Stream operations:1:peek eof.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:0:Stream operations:1:peek eof is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:0:Stream operations:1:peek eof.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:0:Stream operations:3:peek2 normal.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:0:Stream operations:3:peek2 normal is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:0:Stream operations:3:peek2 normal.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:0:Stream operations:5:peek2 eof.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:0:Stream operations:5:peek2 eof is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:0:Stream operations:5:peek2 eof.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:0:Stream operations:7:advance updates col.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:0:Stream operations:7:advance updates col is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:0:Stream operations:7:advance updates col.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:0:Stream operations:9:next returns char.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:0:Stream operations:9:next returns char is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:0:Stream operations:9:next returns char.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:0:Stream operations:11:is_eof empty.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:0:Stream operations:11:is_eof empty is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:0:Stream operations:11:is_eof empty.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:0:Stream operations:13:is_eof after consuming.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:0:Stream operations:13:is_eof after consuming is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:0:Stream operations:13:is_eof after consuming.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:1:Skip whitespace and comments:1:skip newlines.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:1:Skip whitespace and comments:1:skip newlines is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:1:Skip whitespace and comments:1:skip newlines.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:1:Skip whitespace and comments:3:skip block comment.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:1:Skip whitespace and comments:3:skip block comment is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:1:Skip whitespace and comments:3:skip block comment.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:1:Skip whitespace and comments:5:skip unterminated block comment.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:1:Skip whitespace and comments:5:skip unterminated block comment is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:1:Skip whitespace and comments:5:skip unterminated block comment.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:2:lex_number:1:zero.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:2:lex_number:1:zero is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:2:lex_number:1:zero.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:2:lex_number:3:float.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:2:lex_number:3:float is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:2:lex_number:3:float.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:2:lex_number:5:grid dim.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:2:lex_number:5:grid dim is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:2:lex_number:5:grid dim.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:2:lex_number:7:duration.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:2:lex_number:7:duration is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:2:lex_number:7:duration.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:2:lex_number:9:percent.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:2:lex_number:9:percent is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:2:lex_number:9:percent.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:2:lex_number:11:s not consumed in word.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:2:lex_number:11:s not consumed in word is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:2:lex_number:11:s not consumed in word.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:3:lex_string:2:empty.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:3:lex_string:2:empty is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:3:lex_string:2:empty.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:3:lex_string:4:filepath dot.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:3:lex_string:4:filepath dot is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:3:lex_string:4:filepath dot.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:3:lex_string:6:unterminated.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:3:lex_string:6:unterminated is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:3:lex_string:6:unterminated.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:4:lex_ident / lookup / is_key:0:keyword world.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:4:lex_ident / lookup / is_key:0:keyword world is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:4:lex_ident / lookup / is_key:0:keyword world.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:4:lex_ident / lookup / is_key:2:keyword active.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:4:lex_ident / lookup / is_key:2:keyword active is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:4:lex_ident / lookup / is_key:2:keyword active.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:4:lex_ident / lookup / is_key:4:keyword false.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:4:lex_ident / lookup / is_key:4:keyword false is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:4:lex_ident / lookup / is_key:4:keyword false.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:4:lex_ident / lookup / is_key:6:keyword infinite.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:4:lex_ident / lookup / is_key:6:keyword infinite is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:4:lex_ident / lookup / is_key:6:keyword infinite.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:4:lex_ident / lookup / is_key:8:ident underscore.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:4:lex_ident / lookup / is_key:8:ident underscore is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:4:lex_ident / lookup / is_key:8:ident underscore.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:4:lex_ident / lookup / is_key:10:key AUTO.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:4:lex_ident / lookup / is_key:10:key AUTO is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:4:lex_ident / lookup / is_key:10:key AUTO.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:4:lex_ident / lookup / is_key:12:key UP.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:4:lex_ident / lookup / is_key:12:key UP is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:4:lex_ident / lookup / is_key:12:key UP.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:5:lex_op:1:rbrace.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:5:lex_op:1:rbrace is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:5:lex_op:1:rbrace.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:5:lex_op:3:assign.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:5:lex_op:3:assign is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:5:lex_op:3:assign.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:5:lex_op:5:geq.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:5:lex_op:5:geq is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:5:lex_op:5:geq.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:5:lex_op:7:gt.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:5:lex_op:7:gt is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:5:lex_op:7:gt.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:5:lex_op:9:unexpected char.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:5:lex_op:9:unexpected char is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:5:lex_op:9:unexpected char.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:6:tokenize pipeline:0:empty.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:6:tokenize pipeline:0:empty is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:6:tokenize pipeline:0:empty.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:6:tokenize pipeline:1:eof always last.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:6:tokenize pipeline:1:eof always last is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:6:tokenize pipeline:1:eof always last.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:6:tokenize pipeline:4:spawn no position.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:6:tokenize pipeline:4:spawn no position is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:6:tokenize pipeline:4:spawn no position.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:6:tokenize pipeline:5:spawn with position.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:6:tokenize pipeline:5:spawn with position is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:6:tokenize pipeline:5:spawn with position.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:6:tokenize pipeline:8:percent literal.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:6:tokenize pipeline:8:percent literal is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:6:tokenize pipeline:8:percent literal.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:6:tokenize pipeline:9:float expr.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:6:tokenize pipeline:9:float expr is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:6:tokenize pipeline:9:float expr.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:7:token_to_string:2:grid dim.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:7:token_to_string:2:grid dim is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:7:token_to_string:2:grid dim.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:7:token_to_string:4:percent.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:7:token_to_string:4:percent is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:7:token_to_string:4:percent.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:7:token_to_string:6:false.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:7:token_to_string:6:false is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:7:token_to_string:6:false.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL lexer:7:token_to_string:8:ident.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL lexer:7:token_to_string:8:ident is successful.
+2026-06-20T19:19:01+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL lexer:7:token_to_string:8:ident.

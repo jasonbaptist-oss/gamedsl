@@ -1,3 +1,0 @@
-(test
- (name test_lexer)
- (libraries ounit2 gamedsl_lib))
