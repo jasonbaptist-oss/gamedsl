@@ -1,0 +1,51 @@
+// test_04_variables_and_expressions.gdsl
+// Normal case: variables declared at top level,
+// used in arithmetic expressions, and used to
+// override entity fields mid-game.
+
+var base_damage = 25
+var scale       = 1.5
+var sword_dmg   = base_damage * scale
+var wave        = 1
+
+world {
+  grid_size: 15x15
+  duration: 120s
+}
+
+player "P1" {
+  health: 100
+  controls {
+    up: W  down: S  left: A  right: D
+  }
+}
+
+ability "Sword" {
+  type: active
+  key: SPACE
+  damage: sword_dmg
+  range: 2
+  shape: directional
+  spread: 1
+}
+
+monster "Goblin" {
+  health: base_damage * 2
+  movement: towards "P1"
+  count: 3
+}
+
+assign "P1" abilities ["Sword"]
+
+win_condition {
+  kill_monsters: monsters_killed("Goblin") >= 3
+}
+
+loop {
+  times: time_elapsed < 120
+  actions {
+    wait: 30s
+    Goblin.health = Goblin.health + wave * 10
+    wave = wave + 1
+  }
+}

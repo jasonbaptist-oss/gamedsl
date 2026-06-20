@@ -1,0 +1,69 @@
+// test_03_monsters_movement_and_abilities.gdsl
+// Normal case: three monster types with different movement values
+// (towards, random, stationary) and abilities assigned to each.
+
+world {
+  grid_size: 20x20
+  duration: 90s
+}
+
+player "P1" {
+  health: 150
+  controls {
+    up: W  down: S  left: A  right: D
+  }
+}
+
+ability "Bite" {
+  type: active
+  key: AUTO
+  damage: 10
+  range: 1
+  shape: manhattan
+}
+
+ability "Spit" {
+  type: timed
+  key: AUTO
+  damage: 20
+  range: 3
+  shape: directional
+  spread: 0
+  activates_at: 20s
+}
+
+ability "TrollSmash" {
+  type: active
+  key: AUTO
+  damage: 40
+  range: 1
+  shape: chebyshev
+}
+
+monster "Goblin" {
+  health: 50
+  img: "assets/goblin.png"
+  movement: towards "P1"
+  count: 4
+}
+
+monster "Ghost" {
+  health: 30
+  movement: random
+  count: 2
+}
+
+monster "Turret" {
+  health: 80
+  movement: stationary
+  count: 3
+  position: 10, 10
+}
+
+assign "Goblin" abilities ["Bite"]
+assign "Ghost"  abilities ["Spit"]
+assign "Turret" abilities ["TrollSmash"]
+
+win_condition {
+  kill_monsters: monsters_killed("Goblin") >= 4
+}

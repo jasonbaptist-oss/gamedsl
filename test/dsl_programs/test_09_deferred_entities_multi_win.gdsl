@@ -1,0 +1,84 @@
+// test_09_deferred_entities_multiple_win_conditions.gdsl
+// Corner case: count: 0 monster and active: false player —
+// neither is on the grid at game start.
+// Also tests multiple win_condition fields in one block,
+// and a win condition using players_killed runtime variable.
+
+world {
+  grid_size: 15x15
+  duration: 180s
+}
+
+player "P1" {
+  health: 100
+  controls {
+    up: W  down: S  left: A  right: D
+  }
+}
+
+// P2 is defined but not active at game start
+player "P2" {
+  health: 100
+  active: false
+  controls {
+    up: UP  down: DOWN  left: LEFT  right: RIGHT
+  }
+}
+
+ability "Slash" {
+  type: active
+  key: SPACE
+  damage: 30
+  range: 2
+  shape: directional
+  spread: 1
+}
+
+ability "Bite" {
+  type: active
+  key: AUTO
+  damage: 15
+  range: 1
+  shape: manhattan
+}
+
+// Boss declared but count: 0, spawned later by spawn stmt
+monster "FinalBoss" {
+  health: 1000
+  movement: towards "P1"
+  count: 0
+}
+
+monster "Goblin" {
+  health: 40
+  movement: random
+  count: 3
+}
+
+assign "P1"        abilities ["Slash"]
+assign "Goblin"    abilities ["Bite"]
+assign "FinalBoss" abilities ["Bite"]
+
+win_condition {
+  kill_monsters:  monsters_killed("FinalBoss") >= 1
+  kill_players:   players_killed >= 1
+  survive:        180s
+}
+
+// Spawn P2 after 15 seconds
+loop {
+  times: 1
+  actions {
+    wait: 15s
+    spawn "P2"
+  }
+}
+
+// Spawn the boss after 60 seconds
+loop {
+  times: 1
+  actions {
+    wait: 60s
+    spawn "FinalBoss" position: 7, 7
+  }
+}
