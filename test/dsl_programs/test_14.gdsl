@@ -1,0 +1,47 @@
+var difficulty_multiplier = 2
+
+world {
+  grid_size: 100x100
+  duration: 999s
+}
+
+player "Knight" {
+  health: 200
+  controls {
+    up: "w" 
+    down: "s" 
+    left: "a" 
+    right: "d"
+  }
+}
+
+ability "Cleave" {
+  type: Permanent
+  damage: 15 * difficulty_multiplier
+  shape: Manhattan
+  if (difficulty_multiplier > 1) {
+    range: 3
+  } else {
+    range: 1
+  }
+}
+
+monster "Slime" {
+  health: 10
+  movement: loop {
+    times: infinite
+    actions {
+      move: random
+      wait: 1s
+      move: towards "Knight"
+      wait: 1s
+    }
+  }
+  count: 20
+}
+
+assign "Knight" abilities ["Cleave"]
+
+win_condition {
+  elimination: MonstersKilled("Slime") >= 20
+}
