@@ -1,0 +1,25 @@
+var base_hp = 50
+var max_hp = base_hp + 25 * 2
+var start_x = 10
+var start_y = 10
+
+world {
+  grid_size: 30x30
+  duration: 300s
+}
+
+player "P1" {
+  health: max_hp
+  active: true
+  position: start_x, start_y
+  controls {
+    up: "Up"
+    down: "Down"
+    left: "Left"
+    right: "Right"
+  }
+}
+
+win_condition {
+  kill_players: PlayersAlive == 1
+}

@@ -46,10 +46,7 @@ let parse_error msg pos = raise (ParseError (msg, pos))
 (* The parser holds the token array and a mutable index.
    This is the entire "state" a recursive descent parser needs —
    no stack, no table, just "where am I in the token list". *)
-type parser_state = {
-  toks : located_token array;
-  mutable idx : int;
-}
+type parser_state = { toks : located_token array; mutable idx : int }
 
 let make_parser tokens = { toks = Array.of_list tokens; idx = 0 }
 
@@ -59,12 +56,10 @@ let cur_pos p = p.toks.(p.idx).pos
 
 (* peek one token ahead (for two-token lookahead decisions) *)
 let peek_next p =
-  if p.idx + 1 < Array.length p.toks then p.toks.(p.idx + 1).token
-  else EOF
+  if p.idx + 1 < Array.length p.toks then p.toks.(p.idx + 1).token else EOF
 
 (* consume the current token unconditionally and move forward *)
-let advance p =
-  if p.idx < Array.length p.toks - 1 then p.idx <- p.idx + 1
+let advance p = if p.idx < Array.length p.toks - 1 then p.idx <- p.idx + 1
 
 (* expect a specific token; consume it if it matches,
    otherwise raise a ParseError naming what was expected
@@ -74,43 +69,57 @@ let expect p expected =
   if got = expected then advance p
   else
     parse_error
-      (Printf.sprintf "Expected %s but found %s"
-         (token_to_string expected) (token_to_string got))
+      (Printf.sprintf "Expected %s but found %s" (token_to_string expected)
+         (token_to_string got))
       (cur_pos p)
 
 (* expect an IDENT token specifically and return its string payload *)
 let expect_ident p =
   match cur p with
-  | IDENT s -> advance p; s
-  | t -> parse_error
-           (Printf.sprintf "Expected identifier but found %s" (token_to_string t))
-           (cur_pos p)
+  | IDENT s ->
+      advance p;
+      s
+  | t ->
+      parse_error
+        (Printf.sprintf "Expected identifier but found %s" (token_to_string t))
+        (cur_pos p)
 
 (* expect a STRING_LIT token and return its string payload *)
 let expect_string p =
   match cur p with
-  | STRING_LIT s -> advance p; s
-  | t -> parse_error
-           (Printf.sprintf "Expected string literal but found %s" (token_to_string t))
-           (cur_pos p)
+  | STRING_LIT s ->
+      advance p;
+      s
+  | t ->
+      parse_error
+        (Printf.sprintf "Expected string literal but found %s"
+           (token_to_string t))
+        (cur_pos p)
 
 (* expect a FILEPATH_LIT token and return its string payload *)
 let expect_filepath p =
   match cur p with
-  | FILEPATH_LIT s -> advance p; s
-  | STRING_LIT s -> advance p; s  (* a plain string with no path chars is still ok as a path *)
-  | t -> parse_error
-           (Printf.sprintf "Expected filepath but found %s" (token_to_string t))
-           (cur_pos p)
+  | FILEPATH_LIT s ->
+      advance p;
+      s
+  | STRING_LIT s ->
+      advance p;
+      s (* a plain string with no path chars is still ok as a path *)
+  | t ->
+      parse_error
+        (Printf.sprintf "Expected filepath but found %s" (token_to_string t))
+        (cur_pos p)
 
 (* expect a KEY_LIT token and return its string payload *)
 let expect_key p =
   match cur p with
-  | KEY_LIT k -> advance p; k
-  | t -> parse_error
-           (Printf.sprintf "Expected a KEY value but found %s" (token_to_string t))
-           (cur_pos p)
-
+  | KEY_LIT k ->
+      advance p;
+      k
+  | t ->
+      parse_error
+        (Printf.sprintf "Expected a KEY value but found %s" (token_to_string t))
+        (cur_pos p)
 
 (* ============================================================
    SECTION 2 — EXPRESSIONS
@@ -133,8 +142,14 @@ let rec parse_expr p =
   let continue_loop = ref true in
   while !continue_loop do
     match cur p with
-    | PLUS  -> advance p; let right = parse_term p in left := EBinop (Add, !left, right)
-    | MINUS -> advance p; let right = parse_term p in left := EBinop (Sub, !left, right)
+    | PLUS ->
+        advance p;
+        let right = parse_term p in
+        left := EBinop (Add, !left, right)
+    | MINUS ->
+        advance p;
+        let right = parse_term p in
+        left := EBinop (Sub, !left, right)
     | _ -> continue_loop := false
   done;
   !left
@@ -144,61 +159,89 @@ and parse_term p =
   let continue_loop = ref true in
   while !continue_loop do
     match cur p with
-    | STAR  -> advance p; let right = parse_factor p in left := EBinop (Mul, !left, right)
-    | SLASH -> advance p; let right = parse_factor p in left := EBinop (Div, !left, right)
+    | STAR ->
+        advance p;
+        let right = parse_factor p in
+        left := EBinop (Mul, !left, right)
+    | SLASH ->
+        advance p;
+        let right = parse_factor p in
+        left := EBinop (Div, !left, right)
     | _ -> continue_loop := false
   done;
   !left
 
 and parse_factor p =
   match cur p with
-  | INT_LIT n   -> advance p; EInt n
-  | FLOAT_LIT f -> advance p; EFloat f
+  | INT_LIT n ->
+      advance p;
+      EInt n
+  | FLOAT_LIT f ->
+      advance p;
+      EFloat f
   | LPAREN ->
-    advance p;
-    let e = parse_expr p in
-    expect p RPAREN;
-    e
+      advance p;
+      let e = parse_expr p in
+      expect p RPAREN;
+      e
   | MONSTERS_KILLED -> parse_runtime_call p MonstersKilled
-  | MONSTER_COUNT   -> parse_runtime_call p MonsterCount
-  | MONSTER_HEALTH  -> parse_runtime_call p MonsterHealth
-  | PLAYER_HEALTH   -> parse_runtime_call p PlayerHealth
-  | PLAYERS_KILLED  -> advance p; ERuntimeCall (PlayersKilled, None)
-  | PLAYERS_ALIVE   -> advance p; ERuntimeCall (PlayersAlive, None)
-  | TIME_ELAPSED    -> advance p; ERuntimeCall (TimeElapsed, None)
+  | MONSTER_COUNT -> parse_runtime_call p MonsterCount
+  | MONSTER_HEALTH -> parse_runtime_call p MonsterHealth
+  | PLAYER_HEALTH -> parse_runtime_call p PlayerHealth
+  | PLAYERS_KILLED ->
+      advance p;
+      ERuntimeCall (PlayersKilled, None)
+  | PLAYERS_ALIVE ->
+      advance p;
+      ERuntimeCall (PlayersAlive, None)
+  | TIME_ELAPSED ->
+      advance p;
+      ERuntimeCall (TimeElapsed, None)
   | IDENT name ->
-    advance p;
-    (* could be a bare variable OR the start of a field_read
+      advance p;
+      (* could be a bare variable OR the start of a field_read
        (IDENT "." IDENT ...) OR a function call IDENT "(" ... ")" *)
-    if cur p = DOT then
-      parse_field_read_tail p (RefIdent name)
-    else if cur p = LPAREN then
-      EVar name  (* function calls as expressions are not part of this
+      if cur p = DOT then parse_field_read_tail p (RefIdent name)
+      else if cur p = LPAREN then EVar name
+        (* function calls as expressions are not part of this
                     grammar's expr rule; fn_call is a stmt only.
                     A bare IDENT followed by LPAREN here is left as
                     EVar — the semantic checker can reject misuse. *)
-    else
-      EVar name
+      else EVar name
   | STRING_LIT s ->
-    (* a bare STRING in an expr position is the start of a
+      (* a bare STRING in an expr position is the start of a
        field_read on a literal entity name, e.g. "Goblin".health *)
-    advance p;
-    if cur p = DOT then parse_field_read_tail p (RefString s)
-    else
-      parse_error "A bare STRING is only valid as the start of a field read (e.g. \"Goblin\".health)" (cur_pos p)
-  | t -> parse_error (Printf.sprintf "Unexpected token in expression: %s" (token_to_string t)) (cur_pos p)
+      advance p;
+      if cur p = DOT then parse_field_read_tail p (RefString s)
+      else
+        parse_error
+          "A bare STRING is only valid as the start of a field read (e.g. \
+           \"Goblin\".health)"
+          (cur_pos p)
+  | t ->
+      parse_error
+        (Printf.sprintf "Unexpected token in expression: %s" (token_to_string t))
+        (cur_pos p)
 
 (* runtime_fn "(" call_arg ")" — call_arg is STRING or IDENT *)
 and parse_runtime_call p fn =
-  advance p; (* consume the runtime_fn keyword token *)
+  advance p;
+  (* consume the runtime_fn keyword token *)
   expect p LPAREN;
   let arg =
     match cur p with
-    | STRING_LIT s -> advance p; ArgString s
-    | IDENT s      -> advance p; ArgIdent s
-    | t -> parse_error
-             (Printf.sprintf "Expected STRING or IDENT as runtime call argument, found %s" (token_to_string t))
-             (cur_pos p)
+    | STRING_LIT s ->
+        advance p;
+        ArgString s
+    | IDENT s ->
+        advance p;
+        ArgIdent s
+    | t ->
+        parse_error
+          (Printf.sprintf
+             "Expected STRING or IDENT as runtime call argument, found %s"
+             (token_to_string t))
+          (cur_pos p)
   in
   expect p RPAREN;
   ERuntimeCall (fn, Some arg)
@@ -212,7 +255,6 @@ and parse_field_read_tail p entity =
     fields := expect_ident p :: !fields
   done;
   EFieldRead (entity, List.rev !fields)
-
 
 (* ============================================================
    SECTION 3 — CONDITIONS
@@ -252,33 +294,46 @@ and parse_and_cond p =
 and parse_not_cond p =
   match cur p with
   | NOT ->
-    advance p;
-    let inner = parse_not_cond p in
-    CNot inner
+      advance p;
+      let inner = parse_not_cond p in
+      CNot inner
   | LPAREN ->
-    advance p;
-    let inner = parse_condition p in
-    expect p RPAREN;
-    inner
+      advance p;
+      let inner = parse_condition p in
+      expect p RPAREN;
+      inner
   | _ -> parse_comparison p
 
 and parse_comparison p =
   let left = parse_expr p in
   let op =
     match cur p with
-    | EQ  -> advance p; Eq
-    | NEQ -> advance p; Neq
-    | GEQ -> advance p; Geq
-    | LEQ -> advance p; Leq
-    | GT  -> advance p; Gt
-    | LT  -> advance p; Lt
-    | t -> parse_error
-             (Printf.sprintf "Expected a comparison operator but found %s" (token_to_string t))
-             (cur_pos p)
+    | EQ ->
+        advance p;
+        Eq
+    | NEQ ->
+        advance p;
+        Neq
+    | GEQ ->
+        advance p;
+        Geq
+    | LEQ ->
+        advance p;
+        Leq
+    | GT ->
+        advance p;
+        Gt
+    | LT ->
+        advance p;
+        Lt
+    | t ->
+        parse_error
+          (Printf.sprintf "Expected a comparison operator but found %s"
+             (token_to_string t))
+          (cur_pos p)
   in
   let right = parse_expr p in
   CCmp (left, op, right)
-
 
 (* ============================================================
    SECTION 4 — ENTITY REFERENCES (shared by stmt and ability)
@@ -291,11 +346,18 @@ and parse_comparison p =
 
 let parse_entity_ref p =
   match cur p with
-  | STRING_LIT s -> advance p; RefString s
-  | IDENT s      -> advance p; RefIdent s
-  | t -> parse_error
-           (Printf.sprintf "Expected entity reference (STRING or IDENT) but found %s" (token_to_string t))
-           (cur_pos p)
+  | STRING_LIT s ->
+      advance p;
+      RefString s
+  | IDENT s ->
+      advance p;
+      RefIdent s
+  | t ->
+      parse_error
+        (Printf.sprintf
+           "Expected entity reference (STRING or IDENT) but found %s"
+           (token_to_string t))
+        (cur_pos p)
 
 (* field_chain ::= ("." IDENT)+   parsed after an entity_ref has
    already been read; returns the dotted field path *)
@@ -308,7 +370,6 @@ let parse_field_chain p =
     fields := expect_ident p :: !fields
   done;
   List.rev !fields
-
 
 (* ============================================================
    SECTION 5 — STATEMENTS
@@ -329,47 +390,55 @@ let parse_field_chain p =
 
 let rec parse_stmt p =
   match cur p with
-  | VAR   -> parse_var_decl p
-  | IF    -> parse_if_stmt p
-  | LOOP  -> SLoop (parse_loop_stmt p)
-  | FN    -> parse_fn_decl p
+  | VAR -> parse_var_decl p
+  | IF -> parse_if_stmt p
+  | LOOP -> SLoop (parse_loop_stmt p)
+  | FN -> parse_fn_decl p
   | SPAWN -> SSpawn (parse_spawn_stmt p)
-  | IDENT _ | STRING_LIT _ ->
-    (* disambiguate using one token of lookahead *)
-    let saved_idx = p.idx in
-    let entity = parse_entity_ref p in
-    (match cur p with
-     | DOT ->
-       let fields = parse_field_chain p in
-       expect p ASSIGN_OP;
-       let value = parse_expr p in
-       (match entity with
-        | RefString _ | RefIdent _ -> SFieldOverride (entity, fields, value))
-     | ASSIGN_OP ->
-       (* must have been a bare IDENT, not STRING, for var_assign *)
-       (match entity with
-        | RefIdent name ->
-          advance p; (* consume = *)
+  | IDENT _ | STRING_LIT _ -> (
+      (* disambiguate using one token of lookahead *)
+      let saved_idx = p.idx in
+      let entity = parse_entity_ref p in
+      match cur p with
+      | DOT -> (
+          let fields = parse_field_chain p in
+          expect p ASSIGN_OP;
           let value = parse_expr p in
-          SVarAssign (name, value)
-        | RefString _ ->
-          parse_error "Cannot assign directly to a string literal" (cur_pos p))
-     | LPAREN ->
-       (* fn_call — rewind and reparse as a call since entity_ref
+          match entity with
+          | RefString _ | RefIdent _ -> SFieldOverride (entity, fields, value))
+      | ASSIGN_OP -> (
+          (* must have been a bare IDENT, not STRING, for var_assign *)
+          match entity with
+          | RefIdent name ->
+              advance p;
+              (* consume = *)
+              let value = parse_expr p in
+              SVarAssign (name, value)
+          | RefString _ ->
+              parse_error "Cannot assign directly to a string literal"
+                (cur_pos p))
+      | LPAREN -> (
+          (* fn_call — rewind and reparse as a call since entity_ref
           already consumed the name *)
-       (match entity with
-        | RefIdent name ->
-          let args = parse_call_args p in
-          SFnCall { call_name = name; call_args = args }
-        | RefString _ ->
+          match entity with
+          | RefIdent name ->
+              let args = parse_call_args p in
+              SFnCall { call_name = name; call_args = args }
+          | RefString _ ->
+              p.idx <- saved_idx;
+              parse_error "Unexpected '(' after string literal" (cur_pos p))
+      | t ->
           p.idx <- saved_idx;
-          parse_error "Unexpected '(' after string literal" (cur_pos p))
-     | t ->
-       p.idx <- saved_idx;
-       parse_error
-         (Printf.sprintf "Expected '.', '=', or '(' after identifier, found %s" (token_to_string t))
-         (cur_pos p))
-  | t -> parse_error (Printf.sprintf "Unexpected token at start of statement: %s" (token_to_string t)) (cur_pos p)
+          parse_error
+            (Printf.sprintf
+               "Expected '.', '=', or '(' after identifier, found %s"
+               (token_to_string t))
+            (cur_pos p))
+  | t ->
+      parse_error
+        (Printf.sprintf "Unexpected token at start of statement: %s"
+           (token_to_string t))
+        (cur_pos p)
 
 (* var_decl ::= "var" IDENT "=" expr *)
 and parse_var_decl p =
@@ -395,7 +464,8 @@ and parse_if_stmt p =
       let body = parse_stmt_list_until p RBRACE in
       expect p RBRACE;
       Some body
-    end else None
+    end
+    else None
   in
   SIf (cond, then_body, else_body)
 
@@ -458,10 +528,10 @@ and parse_spawn_stmt p =
       expect p COMMA;
       let y = parse_expr p in
       Some (x, y)
-    end else None
+    end
+    else None
   in
   { spawn_name = name; spawn_position = position }
-
 
 (* ============================================================
    SECTION 6 — LOOP STATEMENT
@@ -488,8 +558,12 @@ and parse_loop_stmt p =
   expect p COLON;
   let times =
     match cur p with
-    | INT_LIT n -> advance p; LFinite n
-    | INFINITE  -> advance p; LInfinite
+    | INT_LIT n ->
+        advance p;
+        LFinite n
+    | INFINITE ->
+        advance p;
+        LInfinite
     | _ -> LCondition (parse_condition p)
   in
   expect p ACTIONS;
@@ -508,35 +582,43 @@ and parse_action_list_until p terminator =
 
 and parse_action p =
   match cur p with
-  | MOVE  -> parse_move_action p
-  | WAIT  -> parse_wait_action p
-  | IF    -> parse_if_action p
-  | LOOP  -> ALoop (parse_loop_stmt p)
+  | MOVE -> parse_move_action p
+  | WAIT -> parse_wait_action p
+  | IF -> parse_if_action p
+  | LOOP -> ALoop (parse_loop_stmt p)
   | SPAWN -> ASpawn (parse_spawn_stmt p)
-  | IDENT _ | STRING_LIT _ ->
-    let saved_idx = p.idx in
-    let entity = parse_entity_ref p in
-    (match cur p with
-     | DOT ->
-       let fields = parse_field_chain p in
-       expect p ASSIGN_OP;
-       let value = parse_expr p in
-       AField (entity, fields, value)
-     | ASSIGN_OP ->
-       (match entity with
-        | RefIdent name ->
-          advance p;
+  | IDENT _ | STRING_LIT _ -> (
+      let saved_idx = p.idx in
+      let entity = parse_entity_ref p in
+      match cur p with
+      | DOT ->
+          let fields = parse_field_chain p in
+          expect p ASSIGN_OP;
           let value = parse_expr p in
-          AAssign (name, value)
-        | RefString _ ->
+          AField (entity, fields, value)
+      | ASSIGN_OP -> (
+          match entity with
+          | RefIdent name ->
+              advance p;
+              let value = parse_expr p in
+              AAssign (name, value)
+          | RefString _ ->
+              p.idx <- saved_idx;
+              parse_error
+                "Cannot assign directly to a string literal in an action"
+                (cur_pos p))
+      | t ->
           p.idx <- saved_idx;
-          parse_error "Cannot assign directly to a string literal in an action" (cur_pos p))
-     | t ->
-       p.idx <- saved_idx;
-       parse_error
-         (Printf.sprintf "Expected '.' or '=' after identifier in action, found %s" (token_to_string t))
-         (cur_pos p))
-  | t -> parse_error (Printf.sprintf "Unexpected token at start of action: %s" (token_to_string t)) (cur_pos p)
+          parse_error
+            (Printf.sprintf
+               "Expected '.' or '=' after identifier in action, found %s"
+               (token_to_string t))
+            (cur_pos p))
+  | t ->
+      parse_error
+        (Printf.sprintf "Unexpected token at start of action: %s"
+           (token_to_string t))
+        (cur_pos p)
 
 (* move_action ::= "move" ":" move_val
    move_val    ::= "up" | "down" | "left" | "right"
@@ -546,16 +628,29 @@ and parse_move_action p =
   expect p COLON;
   let mv =
     match cur p with
-    | UP      -> advance p; MUp
-    | DOWN    -> advance p; MDown
-    | LEFT    -> advance p; MLeft
-    | RIGHT   -> advance p; MRight
-    | RANDOM  -> advance p; MRandom
+    | UP ->
+        advance p;
+        MUp
+    | DOWN ->
+        advance p;
+        MDown
+    | LEFT ->
+        advance p;
+        MLeft
+    | RIGHT ->
+        advance p;
+        MRight
+    | RANDOM ->
+        advance p;
+        MRandom
     | TOWARDS ->
-      advance p;
-      let name = expect_string p in
-      MTowards name
-    | t -> parse_error (Printf.sprintf "Expected a move value, found %s" (token_to_string t)) (cur_pos p)
+        advance p;
+        let name = expect_string p in
+        MTowards name
+    | t ->
+        parse_error
+          (Printf.sprintf "Expected a move value, found %s" (token_to_string t))
+          (cur_pos p)
   in
   AMove mv
 
@@ -564,8 +659,14 @@ and parse_wait_action p =
   expect p WAIT;
   expect p COLON;
   match cur p with
-  | DURATION_LIT n -> advance p; AWait n
-  | t -> parse_error (Printf.sprintf "Expected a duration like 5s, found %s" (token_to_string t)) (cur_pos p)
+  | DURATION_LIT n ->
+      advance p;
+      AWait n
+  | t ->
+      parse_error
+        (Printf.sprintf "Expected a duration like 5s, found %s"
+           (token_to_string t))
+        (cur_pos p)
 
 (* if_action ::= "if" "(" condition ")" "{" action* "}" ("else" "{" action* "}")? *)
 and parse_if_action p =
@@ -583,10 +684,10 @@ and parse_if_action p =
       let body = parse_action_list_until p RBRACE in
       expect p RBRACE;
       Some body
-    end else None
+    end
+    else None
   in
   AIf (cond, then_body, else_body)
-
 
 (* ============================================================
    SECTION 7 — WORLD BLOCK
@@ -601,19 +702,30 @@ let parse_world p =
   expect p COLON;
   let grid =
     match cur p with
-    | GRID_DIM_LIT (w, h) -> advance p; { width = w; height = h }
-    | t -> parse_error (Printf.sprintf "Expected grid dimension like 20x15, found %s" (token_to_string t)) (cur_pos p)
+    | GRID_DIM_LIT (w, h) ->
+        advance p;
+        { width = w; height = h }
+    | t ->
+        parse_error
+          (Printf.sprintf "Expected grid dimension like 20x15, found %s"
+             (token_to_string t))
+          (cur_pos p)
   in
   expect p DURATION_KW;
   expect p COLON;
   let duration =
     match cur p with
-    | DURATION_LIT n -> advance p; n
-    | t -> parse_error (Printf.sprintf "Expected a duration like 120s, found %s" (token_to_string t)) (cur_pos p)
+    | DURATION_LIT n ->
+        advance p;
+        n
+    | t ->
+        parse_error
+          (Printf.sprintf "Expected a duration like 120s, found %s"
+             (token_to_string t))
+          (cur_pos p)
   in
   expect p RBRACE;
   { grid; duration }
-
 
 (* ============================================================
    SECTION 8 — PLAYER BLOCK
@@ -641,47 +753,83 @@ let parse_player p =
 
   let img =
     if cur p = IMG then begin
-      advance p; expect p COLON; Some (expect_filepath p)
-    end else None
+      advance p;
+      expect p COLON;
+      Some (expect_filepath p)
+    end
+    else None
   in
 
   let active =
     if cur p = ACTIVE then begin
-      advance p; expect p COLON;
+      advance p;
+      expect p COLON;
       match cur p with
-      | TRUE  -> advance p; true
-      | FALSE -> advance p; false
-      | t -> parse_error (Printf.sprintf "Expected true or false, found %s" (token_to_string t)) (cur_pos p)
-    end else true   (* default *)
+      | TRUE ->
+          advance p;
+          true
+      | FALSE ->
+          advance p;
+          false
+      | t ->
+          parse_error
+            (Printf.sprintf "Expected true or false, found %s"
+               (token_to_string t))
+            (cur_pos p)
+    end
+    else true (* default *)
   in
 
   let position =
     if cur p = POSITION then begin
       advance p;
       Some (parse_position_pair p)
-    end else None
+    end
+    else None
   in
 
   expect p CONTROLS;
   expect p LBRACE;
-  let up    = ref "" and down = ref "" and left = ref "" and right = ref "" in
-  let seen  = ref 0 in
+  let up = ref "" and down = ref "" and left = ref "" and right = ref "" in
+  let seen = ref 0 in
   while cur p <> RBRACE do
     (match cur p with
-     | UP    -> advance p; expect p COLON; up    := expect_key p
-     | DOWN  -> advance p; expect p COLON; down  := expect_key p
-     | LEFT  -> advance p; expect p COLON; left  := expect_key p
-     | RIGHT -> advance p; expect p COLON; right := expect_key p
-     | t -> parse_error (Printf.sprintf "Expected up/down/left/right, found %s" (token_to_string t)) (cur_pos p));
+    | UP ->
+        advance p;
+        expect p COLON;
+        up := expect_key p
+    | DOWN ->
+        advance p;
+        expect p COLON;
+        down := expect_key p
+    | LEFT ->
+        advance p;
+        expect p COLON;
+        left := expect_key p
+    | RIGHT ->
+        advance p;
+        expect p COLON;
+        right := expect_key p
+    | t ->
+        parse_error
+          (Printf.sprintf "Expected up/down/left/right, found %s"
+             (token_to_string t))
+          (cur_pos p));
     incr seen
   done;
-  expect p RBRACE;   (* close controls *)
-  expect p RBRACE;   (* close player *)
+  expect p RBRACE;
+  (* close controls *)
+  expect p RBRACE;
 
-  { p_name = name; p_health = health; p_img = img; p_active = active;
+  (* close player *)
+  {
+    p_name = name;
+    p_health = health;
+    p_img = img;
+    p_active = active;
     p_position = position;
-    p_controls = { up = !up; down = !down; left = !left; right = !right } }
-
+    p_controls = { up = !up; down = !down; left = !left; right = !right };
+  }
 
 (* ============================================================
    SECTION 9 — ABILITY BLOCK
@@ -693,68 +841,115 @@ let parse_player p =
 
 let parse_shape_val p =
   match cur p with
-  | MANHATTAN   -> advance p; Manhattan
-  | CHEBYSHEV   -> advance p; Chebyshev
-  | DIRECTIONAL -> advance p; Directional
-  | t -> parse_error (Printf.sprintf "Expected a shape value, found %s" (token_to_string t)) (cur_pos p)
+  | MANHATTAN ->
+      advance p;
+      Manhattan
+  | CHEBYSHEV ->
+      advance p;
+      Chebyshev
+  | DIRECTIONAL ->
+      advance p;
+      Directional
+  | t ->
+      parse_error
+        (Printf.sprintf "Expected a shape value, found %s" (token_to_string t))
+        (cur_pos p)
 
 let rec parse_ability_stmt p =
   match cur p with
   | DAMAGE ->
-    advance p; expect p COLON; AbField (FDamage (parse_expr p))
+      advance p;
+      expect p COLON;
+      AbField (FDamage (parse_expr p))
   | RANGE ->
-    advance p; expect p COLON; AbField (FRange (parse_expr p))
+      advance p;
+      expect p COLON;
+      AbField (FRange (parse_expr p))
   | SHAPE ->
-    advance p; expect p COLON; AbField (FShape (parse_shape_val p))
+      advance p;
+      expect p COLON;
+      AbField (FShape (parse_shape_val p))
   | SPREAD ->
-    advance p; expect p COLON; AbField (FSpread (parse_expr p))
+      advance p;
+      expect p COLON;
+      AbField (FSpread (parse_expr p))
   | KEY_FIELD ->
-    advance p; expect p COLON; AbField (FKey (expect_key p))
-  | ACTIVATES_AT ->
-    advance p; expect p COLON;
-    (match cur p with
-     | DURATION_LIT n -> advance p; AbField (FActivatesAt n)
-     | t -> parse_error (Printf.sprintf "Expected a duration, found %s" (token_to_string t)) (cur_pos p))
+      advance p;
+      expect p COLON;
+      AbField (FKey (expect_key p))
+  | ACTIVATES_AT -> (
+      advance p;
+      expect p COLON;
+      match cur p with
+      | DURATION_LIT n ->
+          advance p;
+          AbField (FActivatesAt n)
+      | t ->
+          parse_error
+            (Printf.sprintf "Expected a duration, found %s" (token_to_string t))
+            (cur_pos p))
   | REQUIRED_KILLS ->
-    advance p; expect p COLON; AbField (FRequiredKills (parse_expr p))
+      advance p;
+      expect p COLON;
+      AbField (FRequiredKills (parse_expr p))
   | DAMAGE_MULTIPLIER ->
-    advance p; expect p COLON; AbField (FDamageMultiplier (parse_expr p))
-  | DAMAGE_REDUCTION ->
-    advance p; expect p COLON;
-    (match cur p with
-     | PERCENT_LIT n -> advance p; AbField (FDamageReduction n)
-     | t -> parse_error (Printf.sprintf "Expected a percent like 30%%, found %s" (token_to_string t)) (cur_pos p))
+      advance p;
+      expect p COLON;
+      AbField (FDamageMultiplier (parse_expr p))
+  | DAMAGE_REDUCTION -> (
+      advance p;
+      expect p COLON;
+      match cur p with
+      | PERCENT_LIT n ->
+          advance p;
+          AbField (FDamageReduction n)
+      | t ->
+          parse_error
+            (Printf.sprintf "Expected a percent like 30%%, found %s"
+               (token_to_string t))
+            (cur_pos p))
   | HEALTH_REGEN ->
-    advance p; expect p COLON; AbField (FHealthRegen (parse_expr p))
+      advance p;
+      expect p COLON;
+      AbField (FHealthRegen (parse_expr p))
   | SPEED_BOOST ->
-    advance p; expect p COLON; AbField (FSpeedBoost (parse_expr p))
-  | VAR ->
-    (match parse_var_decl p with
-     | SVarDecl (n, e) -> AbVarDecl (n, e)
-     | _ -> assert false)
+      advance p;
+      expect p COLON;
+      AbField (FSpeedBoost (parse_expr p))
+  | VAR -> (
+      match parse_var_decl p with
+      | SVarDecl (n, e) -> AbVarDecl (n, e)
+      | _ -> assert false)
   | IF ->
-    expect p IF;
-    expect p LPAREN;
-    let cond = parse_condition p in
-    expect p RPAREN;
-    expect p LBRACE;
-    let then_body = parse_ability_stmt_list_until p RBRACE in
-    expect p RBRACE;
-    let else_body =
-      if cur p = ELSE then begin
-        advance p; expect p LBRACE;
-        let b = parse_ability_stmt_list_until p RBRACE in
-        expect p RBRACE; Some b
-      end else None
-    in
-    AbIf (cond, then_body, else_body)
+      expect p IF;
+      expect p LPAREN;
+      let cond = parse_condition p in
+      expect p RPAREN;
+      expect p LBRACE;
+      let then_body = parse_ability_stmt_list_until p RBRACE in
+      expect p RBRACE;
+      let else_body =
+        if cur p = ELSE then begin
+          advance p;
+          expect p LBRACE;
+          let b = parse_ability_stmt_list_until p RBRACE in
+          expect p RBRACE;
+          Some b
+        end
+        else None
+      in
+      AbIf (cond, then_body, else_body)
   | IDENT name ->
-    (* bare IDENT "=" expr inside an ability body is a local var_assign *)
-    advance p;
-    expect p ASSIGN_OP;
-    let value = parse_expr p in
-    AbVarAssign (name, value)
-  | t -> parse_error (Printf.sprintf "Unexpected token in ability body: %s" (token_to_string t)) (cur_pos p)
+      (* bare IDENT "=" expr inside an ability body is a local var_assign *)
+      advance p;
+      expect p ASSIGN_OP;
+      let value = parse_expr p in
+      AbVarAssign (name, value)
+  | t ->
+      parse_error
+        (Printf.sprintf "Unexpected token in ability body: %s"
+           (token_to_string t))
+        (cur_pos p)
 
 and parse_ability_stmt_list_until p terminator =
   let stmts = ref [] in
@@ -765,11 +960,22 @@ and parse_ability_stmt_list_until p terminator =
 
 let parse_ability_type p =
   match cur p with
-  | ACTIVE        -> advance p; Active
-  | PERMANENT     -> advance p; Permanent
-  | TIMED         -> advance p; Timed
-  | KILL_UNLOCKED -> advance p; KillUnlocked
-  | t -> parse_error (Printf.sprintf "Expected an ability type, found %s" (token_to_string t)) (cur_pos p)
+  | ACTIVE ->
+      advance p;
+      Active
+  | PERMANENT ->
+      advance p;
+      Permanent
+  | TIMED ->
+      advance p;
+      Timed
+  | KILL_UNLOCKED ->
+      advance p;
+      KillUnlocked
+  | t ->
+      parse_error
+        (Printf.sprintf "Expected an ability type, found %s" (token_to_string t))
+        (cur_pos p)
 
 let parse_ability p =
   expect p ABILITY;
@@ -780,13 +986,15 @@ let parse_ability p =
   let atype = parse_ability_type p in
   let img =
     if cur p = IMG then begin
-      advance p; expect p COLON; Some (expect_filepath p)
-    end else None
+      advance p;
+      expect p COLON;
+      Some (expect_filepath p)
+    end
+    else None
   in
   let body = parse_ability_stmt_list_until p RBRACE in
   expect p RBRACE;
   { a_name = name; a_type = atype; a_img = img; a_body = body }
-
 
 (* ============================================================
    SECTION 10 — MONSTER BLOCK
@@ -804,49 +1012,75 @@ let parse_movement p =
   expect p COLON;
   match cur p with
   | TOWARDS ->
-    advance p;
-    let name = expect_string p in
-    MvTowards name
-  | RANDOM     -> advance p; MvRandom
-  | STATIONARY -> advance p; MvStationary
-  | LOOP       -> MvLoop (parse_loop_stmt p)
-  | t -> parse_error (Printf.sprintf "Expected a movement value, found %s" (token_to_string t)) (cur_pos p)
+      advance p;
+      let name = expect_string p in
+      MvTowards name
+  | RANDOM ->
+      advance p;
+      MvRandom
+  | STATIONARY ->
+      advance p;
+      MvStationary
+  | LOOP -> MvLoop (parse_loop_stmt p)
+  | t ->
+      parse_error
+        (Printf.sprintf "Expected a movement value, found %s"
+           (token_to_string t))
+        (cur_pos p)
 
 let parse_monster p =
   expect p MONSTER;
   let name = expect_string p in
   expect p LBRACE;
 
-  let health   = ref None in
-  let img      = ref None in
+  let health = ref None in
+  let img = ref None in
   let movement = ref None in
-  let count    = ref None in
+  let count = ref None in
   let position = ref None in
 
   while cur p <> RBRACE do
     match cur p with
-    | HEALTH   -> advance p; expect p COLON; health   := Some (parse_expr p)
-    | IMG      -> advance p; expect p COLON; img      := Some (expect_filepath p)
+    | HEALTH ->
+        advance p;
+        expect p COLON;
+        health := Some (parse_expr p)
+    | IMG ->
+        advance p;
+        expect p COLON;
+        img := Some (expect_filepath p)
     | MOVEMENT -> movement := Some (parse_movement p)
-    | COUNT    -> advance p; expect p COLON; count    := Some (parse_expr p)
-    | POSITION -> advance p; position := Some (parse_position_pair p)
-    | t -> parse_error (Printf.sprintf "Unexpected field in monster block: %s" (token_to_string t)) (cur_pos p)
+    | COUNT ->
+        advance p;
+        expect p COLON;
+        count := Some (parse_expr p)
+    | POSITION ->
+        advance p;
+        position := Some (parse_position_pair p)
+    | t ->
+        parse_error
+          (Printf.sprintf "Unexpected field in monster block: %s"
+             (token_to_string t))
+          (cur_pos p)
   done;
   expect p RBRACE;
 
   let require field_name = function
     | Some v -> v
-    | None -> parse_error
-                (Printf.sprintf "Monster \"%s\" is missing required field: %s" name field_name)
-                (cur_pos p)
+    | None ->
+        parse_error
+          (Printf.sprintf "Monster \"%s\" is missing required field: %s" name
+             field_name)
+          (cur_pos p)
   in
-  { m_name     = name;
-    m_health   = require "health" !health;
-    m_img      = !img;
+  {
+    m_name = name;
+    m_health = require "health" !health;
+    m_img = !img;
     m_movement = require "movement" !movement;
-    m_count    = require "count" !count;
-    m_position = !position }
-
+    m_count = require "count" !count;
+    m_position = !position;
+  }
 
 (* ============================================================
    SECTION 11 — ASSIGN STATEMENT
@@ -860,15 +1094,29 @@ let parse_monster p =
 
 let parse_assign_target p =
   match cur p with
-  | STRING_LIT s -> advance p; TgString s
-  | IDENT s      -> advance p; TgIdent s
-  | t -> parse_error (Printf.sprintf "Expected assign target, found %s" (token_to_string t)) (cur_pos p)
+  | STRING_LIT s ->
+      advance p;
+      TgString s
+  | IDENT s ->
+      advance p;
+      TgIdent s
+  | t ->
+      parse_error
+        (Printf.sprintf "Expected assign target, found %s" (token_to_string t))
+        (cur_pos p)
 
 let parse_assign_ability p =
   match cur p with
-  | STRING_LIT s -> advance p; AbName s
-  | IDENT s      -> advance p; AbParam s
-  | t -> parse_error (Printf.sprintf "Expected an ability name, found %s" (token_to_string t)) (cur_pos p)
+  | STRING_LIT s ->
+      advance p;
+      AbName s
+  | IDENT s ->
+      advance p;
+      AbParam s
+  | t ->
+      parse_error
+        (Printf.sprintf "Expected an ability name, found %s" (token_to_string t))
+        (cur_pos p)
 
 let parse_assign_stmt p =
   expect p ASSIGN;
@@ -882,7 +1130,6 @@ let parse_assign_stmt p =
   done;
   expect p RBRACKET;
   { asg_target = target; asg_abilities = List.rev !names }
-
 
 (* ============================================================
    SECTION 12 — OBSTACLE BLOCK
@@ -899,20 +1146,33 @@ let parse_obstacle p =
   let position = parse_position_pair p in
 
   let size = ref None in
-  let img  = ref None in
+  let img = ref None in
   while cur p <> RBRACE do
     match cur p with
-    | SIZE ->
-      advance p; expect p COLON;
-      (match cur p with
-       | GRID_DIM_LIT (w, h) -> advance p; size := Some { width = w; height = h }
-       | t -> parse_error (Printf.sprintf "Expected grid dimension, found %s" (token_to_string t)) (cur_pos p))
-    | IMG -> advance p; expect p COLON; img := Some (expect_filepath p)
-    | t -> parse_error (Printf.sprintf "Unexpected field in obstacle block: %s" (token_to_string t)) (cur_pos p)
+    | SIZE -> (
+        advance p;
+        expect p COLON;
+        match cur p with
+        | GRID_DIM_LIT (w, h) ->
+            advance p;
+            size := Some { width = w; height = h }
+        | t ->
+            parse_error
+              (Printf.sprintf "Expected grid dimension, found %s"
+                 (token_to_string t))
+              (cur_pos p))
+    | IMG ->
+        advance p;
+        expect p COLON;
+        img := Some (expect_filepath p)
+    | t ->
+        parse_error
+          (Printf.sprintf "Unexpected field in obstacle block: %s"
+             (token_to_string t))
+          (cur_pos p)
   done;
   expect p RBRACE;
   { o_name = name; o_position = position; o_size = !size; o_img = !img }
-
 
 (* ============================================================
    SECTION 13 — WIN CONDITION BLOCK
@@ -929,24 +1189,39 @@ let parse_win_condition p =
   while cur p <> RBRACE do
     let field =
       match cur p with
-      | SURVIVE ->
-        advance p; expect p COLON;
-        (match cur p with
-         | DURATION_LIT n -> advance p; WSurvive n
-         | t -> parse_error (Printf.sprintf "Expected a duration, found %s" (token_to_string t)) (cur_pos p))
+      | SURVIVE -> (
+          advance p;
+          expect p COLON;
+          match cur p with
+          | DURATION_LIT n ->
+              advance p;
+              WSurvive n
+          | t ->
+              parse_error
+                (Printf.sprintf "Expected a duration, found %s"
+                   (token_to_string t))
+                (cur_pos p))
       | KILL_MONSTERS ->
-        advance p; expect p COLON; WKillMonsters (parse_condition p)
+          advance p;
+          expect p COLON;
+          WKillMonsters (parse_condition p)
       | KILL_PLAYERS ->
-        advance p; expect p COLON; WKillPlayers (parse_condition p)
+          advance p;
+          expect p COLON;
+          WKillPlayers (parse_condition p)
       | ELIMINATION ->
-        advance p; expect p COLON; WElimination (parse_condition p)
-      | t -> parse_error (Printf.sprintf "Unexpected win field: %s" (token_to_string t)) (cur_pos p)
+          advance p;
+          expect p COLON;
+          WElimination (parse_condition p)
+      | t ->
+          parse_error
+            (Printf.sprintf "Unexpected win field: %s" (token_to_string t))
+            (cur_pos p)
     in
     fields := field :: !fields
   done;
   expect p RBRACE;
   { w_fields = List.rev !fields }
-
 
 (* ============================================================
    SECTION 14 — TOP LEVEL PROGRAM
@@ -1016,16 +1291,17 @@ let parse_program tokens =
     post := parse_stmt p :: !post
   done;
 
-  { pre_stmts     = List.rev !pre;
-    prog_world    = world;
-    players       = List.rev !players;
-    abilities     = List.rev !abilities;
-    monsters      = List.rev !monsters;
-    assigns       = List.rev !assigns;
-    obstacles     = List.rev !obstacles;
+  {
+    pre_stmts = List.rev !pre;
+    prog_world = world;
+    players = List.rev !players;
+    abilities = List.rev !abilities;
+    monsters = List.rev !monsters;
+    assigns = List.rev !assigns;
+    obstacles = List.rev !obstacles;
     win_condition;
-    post_stmts    = List.rev !post }
-
+    post_stmts = List.rev !post;
+  }
 
 (* ============================================================
    SECTION 15 — ENTRY POINT FROM SOURCE FILE

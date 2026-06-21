@@ -1,0 +1,18 @@
+world {
+  grid_size: 20x15
+  duration: 120s
+}
+
+player "Hero" {
+  health: 100
+  controls {
+    up: "w"
+    down: "s"
+    left: "a"
+    right: "d"
+  }
+}
+
+win_condition {
+  survive: 120s
+}
