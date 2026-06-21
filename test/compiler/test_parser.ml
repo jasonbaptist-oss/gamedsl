@@ -1,7 +1,9 @@
 open Gamedsl_lib.Parser
 
 let () =
-  let files = [ "test_11.gdsl"; "test_12.gdsl"; "test_13.gdsl";"test_14.gdsl"] in
+  let files =
+    [ "test_11.gdsl"; "test_12.gdsl"; "test_13.gdsl"; "test_14.gdsl" ]
+  in
 
   List.iter
     (fun file ->
