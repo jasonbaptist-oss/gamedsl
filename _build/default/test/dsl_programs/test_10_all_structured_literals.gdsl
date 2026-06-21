@@ -1,0 +1,73 @@
+// test_10_all_structured_literals.gdsl
+// Corner case: every structured literal the lexer produces
+// must appear and tokenize correctly in one file.
+// GRID_DIM (NxN), DURATION (Ns), PERCENT (N%), FLOAT,
+// and large integers all in one program.
+
+var speed_mult  = 1.5
+var dmg_base    = 2.75
+var big_health  = 9999
+var zero_count  = 0
+
+world {
+  grid_size: 99x99
+  duration: 999s
+}
+
+player "P1" {
+  health: big_health
+  controls {
+    up: W  down: S  left: A  right: D
+  }
+}
+
+// Tests PERCENT literal and FLOAT in damage_multiplier
+ability "PowerUp" {
+  type: permanent
+  damage_reduction: 99%
+  damage_multiplier: speed_mult
+  health_regen: 10
+  speed_boost: 3
+}
+
+// Tests DURATION literal in activates_at
+ability "NuclearStrike" {
+  type: timed
+  key: E
+  damage: 999
+  range: 9
+  shape: chebyshev
+  activates_at: 999s
+}
+
+// Tests kill_unlocked with a FLOAT expression
+ability "UltraRage" {
+  type: kill_unlocked
+  key: Q
+  required_kills: 1
+  damage_multiplier: dmg_base * 2.0
+}
+
+// Tests count: 0 (zero count corner case)
+monster "Ghost" {
+  health: 1
+  movement: random
+  count: zero_count
+}
+
+// Tests large GRID_DIM in obstacle size
+obstacle "BigWall" {
+  position: 0, 49
+  size: 99x1
+}
+
+// Tests smallest possible obstacle (default 1x1)
+obstacle "Dot" {
+  position: 50, 50
+}
+
+assign "P1" abilities ["PowerUp", "NuclearStrike", "UltraRage"]
+
+win_condition {
+  survive: 999s
+}

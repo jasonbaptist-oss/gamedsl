@@ -1,0 +1,67 @@
+// test_06_if_else_runtime_variables.gdsl
+// Normal case: if/else branches using runtime variables
+// (monsters_killed, players_alive, time_elapsed,
+//  player_health, monster_health) as conditions.
+
+world {
+  grid_size: 20x15
+  duration: 120s
+}
+
+player "P1" {
+  health: 100
+  controls {
+    up: W  down: S  left: A  right: D
+  }
+}
+
+ability "Sword" {
+  type: active
+  key: SPACE
+  damage: 30
+  range: 2
+  shape: manhattan
+}
+
+ability "Bite" {
+  type: active
+  key: AUTO
+  damage: 10
+  range: 1
+  shape: manhattan
+}
+
+monster "Goblin" {
+  health: 50
+  movement: towards "P1"
+  count: 5
+}
+
+monster "Boss" {
+  health: 300
+  movement: towards "P1"
+  count: 1
+  position: 10, 7
+}
+
+assign "P1"     abilities ["Sword"]
+assign "Goblin" abilities ["Bite"]
+assign "Boss"   abilities ["Bite"]
+
+win_condition {
+  kill_monsters: monsters_killed("Boss") >= 1
+}
+
+if (monsters_killed("Goblin") >= 3) {
+  Boss.health = Boss.health + 100
+}
+
+if (player_health("P1") < 30 and time_elapsed >= 60) {
+  Sword.damage = Sword.damage + 20
+} else {
+  Sword.damage = Sword.damage + 5
+}
+
+if (monster_health("Boss") < 100) {
+  Boss.movement = random
+}

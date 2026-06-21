@@ -1,0 +1,22 @@
+// test_01_minimal.gdsl
+// Normal case: simplest possible valid program.
+// One player, no monsters, no abilities, survive to win.
+
+world {
+  grid_size: 10x10
+  duration: 60s
+}
+
+player "P1" {
+  health: 100
+  controls {
+    up:    W
+    down:  S
+    left:  A
+    right: D
+  }
+}
+
+win_condition {
+  survive: 60s
+}

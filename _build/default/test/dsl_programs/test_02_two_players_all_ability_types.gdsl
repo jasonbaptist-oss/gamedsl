@@ -1,0 +1,63 @@
+// test_02_two_players_all_ability_types.gdsl
+// Normal case: two players each with all four ability types.
+// Tests that active, permanent, timed, kill_unlocked
+// all tokenize correctly in the same file.
+
+world {
+  grid_size: 20x15
+  duration: 120s
+}
+
+player "P1" {
+  health: 100
+  position: 0, 0
+  controls {
+    up: W  down: S  left: A  right: D
+  }
+}
+
+player "P2" {
+  health: 80
+  position: 19, 14
+  controls {
+    up: UP  down: DOWN  left: LEFT  right: RIGHT
+  }
+}
+
+ability "Sword" {
+  type: active
+  key: SPACE
+  damage: 30
+  range: 2
+  shape: directional
+  spread: 1
+}
+
+ability "Shield" {
+  type: permanent
+  damage_reduction: 25%
+  health_regen: 3
+}
+
+ability "Fireball" {
+  type: timed
+  key: E
+  damage: 50
+  range: 4
+  shape: manhattan
+  activates_at: 30s
+}
+
+ability "Rage" {
+  type: kill_unlocked
+  key: Q
+  required_kills: 5
+  damage_multiplier: 2
+}
+
+assign "P1" abilities ["Sword", "Shield"]
+assign "P2" abilities ["Fireball", "Rage"]
+
+win_condition {
+  elimination: players_alive == 1
+}

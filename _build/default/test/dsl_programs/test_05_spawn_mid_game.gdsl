@@ -1,0 +1,93 @@
+// test_05_spawn_mid_game.gdsl
+// Normal case: monsters declared with count 0 and players
+// declared with active false, both introduced mid-game
+// using spawn statements inside a loop.
+
+world {
+  grid_size: 20x20
+  duration: 180s
+}
+
+player "P1" {
+  health: 100
+  controls {
+    up: W  down: S  left: A  right: D
+  }
+}
+
+player "P2" {
+  health: 100
+  active: false
+  controls {
+    up: UP  down: DOWN  left: LEFT  right: RIGHT
+  }
+}
+
+ability "Slash" {
+  type: active
+  key: SPACE
+  damage: 25
+  range: 1
+  shape: manhattan
+}
+
+ability "Bite" {
+  type: active
+  key: AUTO
+  damage: 8
+  range: 1
+  shape: manhattan
+}
+
+monster "Boss" {
+  health: 500
+  movement: towards "P1"
+  count: 0
+}
+
+monster "Minion" {
+  health: 30
+  movement: random
+  count: 0
+}
+
+assign "P1"     abilities ["Slash"]
+assign "Boss"   abilities ["Bite"]
+assign "Minion" abilities ["Bite"]
+
+obstacle "Wall" {
+  position: 8, 8
+  size: 4x1
+}
+
+win_condition {
+  kill_monsters: monsters_killed("Boss") >= 1
+}
+
+// Spawn P2 after 10 seconds
+loop {
+  times: 1
+  actions {
+    wait: 10s
+    spawn "P2" position: 19, 19
+  }
+}
+
+// Spawn the boss at 30 seconds
+loop {
+  times: 1
+  actions {
+    wait: 30s
+    spawn "Boss" position: 10, 10
+  }
+}
+
+// Spawn a wave of minions every 20 seconds
+loop {
+  times: time_elapsed < 180
+  actions {
+    wait: 20s
+    spawn "Minion"
+    spawn "Minion"
+  }
+}

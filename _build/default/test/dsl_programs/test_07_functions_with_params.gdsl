@@ -1,0 +1,77 @@
+// test_07_functions_with_params.gdsl
+// Normal case: functions declared with parameters,
+// called with string entity names, using field reads
+// and field overrides on parameter names.
+
+fn scale_monster(name, amount) {
+  name.health = name.health + amount
+}
+
+fn punish_on_death(target, boost) {
+  if (monster_count(target) == 0) {
+    target.health = boost
+  }
+}
+
+fn boost_player_damage(pname, extra) {
+  Sword.damage = Sword.damage + extra
+}
+
+world {
+  grid_size: 20x20
+  duration: 150s
+}
+
+player "P1" {
+  health: 120
+  controls {
+    up: W  down: S  left: A  right: D
+  }
+}
+
+ability "Sword" {
+  type: active
+  key: SPACE
+  damage: 30
+  range: 2
+  shape: directional
+  spread: 1
+}
+
+ability "Bite" {
+  type: active
+  key: AUTO
+  damage: 12
+  range: 1
+  shape: manhattan
+}
+
+monster "Goblin" {
+  health: 60
+  movement: towards "P1"
+  count: 4
+}
+
+monster "Troll" {
+  health: 150
+  movement: random
+  count: 2
+}
+
+assign "P1"     abilities ["Sword"]
+assign "Goblin" abilities ["Bite"]
+assign "Troll"  abilities ["Bite"]
+
+win_condition {
+  kill_monsters: monsters_killed("Goblin") >= 4
+}
+
+loop {
+  times: time_elapsed < 150
+  actions {
+    wait: 30s
+    scale_monster("Goblin", 10)
+    scale_monster("Troll", 25)
+    boost_player_damage("P1", 5)
+  }
+}

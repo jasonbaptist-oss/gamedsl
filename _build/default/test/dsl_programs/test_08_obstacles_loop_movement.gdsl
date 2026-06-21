@@ -1,0 +1,75 @@
+// test_08_obstacles_and_loop_movement.gdsl
+// Normal case: multiple obstacles of different sizes,
+// and a monster using a loop for scripted patrol movement.
+// Also tests /* block comments */ alongside // line comments.
+
+/* This is a block comment.
+   It spans multiple lines.
+   The lexer should skip it entirely. */
+
+world {
+  grid_size: 25x20
+  duration: 90s
+}
+
+player "P1" {
+  health: 100
+  position: 0, 0
+  controls {
+    up: W  down: S  left: A  right: D
+  }
+}
+
+ability "Sword" {
+  type: active
+  key: SPACE
+  damage: 25
+  range: 2
+  shape: manhattan
+}
+
+// A patrol guard that walks left and right
+monster "Guard" {
+  health: 80
+  movement: loop {
+    times: infinite
+    actions {
+      move: right
+      move: right
+      move: right
+      wait: 1s
+      move: left
+      move: left
+      move: left
+      wait: 1s
+    }
+  }
+  count: 2
+}
+
+assign "P1" abilities ["Sword"]
+
+// Horizontal wall across the middle
+obstacle "HWall" {
+  position: 0, 10
+  size: 25x1
+  img: "assets/wall.png"
+}
+
+// Single cell pillars
+obstacle "Pillar1" {
+  position: 5, 5
+}
+
+obstacle "Pillar2" {
+  position: 5, 15
+}
+
+obstacle "Pillar3" {
+  position: 20, 5
+  size: 1x3
+}
+
+win_condition {
+  survive: 90s
+}

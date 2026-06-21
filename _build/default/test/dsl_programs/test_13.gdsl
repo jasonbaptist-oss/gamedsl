@@ -1,0 +1,40 @@
+world {
+  grid_size: 50x50
+  duration: 600s
+}
+
+player "Mage" {
+  health: 80
+  controls { 
+    up: "w" 
+    down: "s" 
+    left: "a" 
+    right: "d" 
+  }
+}
+
+ability "Fireball" {
+  type: Active
+  damage: 25
+  range: 10
+  shape: Directional
+  key_field: "space"
+}
+
+monster "Goblin" {
+  health: 30
+  movement: towards "Mage"
+  count: 5
+  position: 10, 10
+}
+
+assign "Mage" abilities ["Fireball"]
+
+obstacle "Wall" {
+  position: 20, 20
+  size: 5x1
+}
+
+win_condition {
+  kill_monsters: MonsterCount == 0 and not (PlayerHealth < 10)
+}

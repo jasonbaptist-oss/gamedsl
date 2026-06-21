@@ -9,7 +9,7 @@ let () =
     (fun file ->
       Printf.printf "Parsing %s... " file;
       try
-        let _ast = parse_file ("test/dsl_programs/" ^ file) in
+        let _ast = parse_file ("../dsl_programs/" ^ file) in
         Printf.printf "SUCCESS!\n"
       with ParseError (msg, pos) ->
         Printf.printf "FAILED at line %d, col %d: %s\n" pos.line pos.col msg)
