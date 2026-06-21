@@ -10,10 +10,7 @@
 
 type binop = Add | Sub | Mul | Div
 type cmp_op = Eq | Neq | Geq | Leq | Gt | Lt
-
-type entity_ref =
-  | RefString of string
-  | RefIdent of string
+type entity_ref = RefString of string | RefIdent of string
 
 type runtime_fn =
   | MonstersKilled
@@ -24,10 +21,7 @@ type runtime_fn =
   | PlayersAlive
   | TimeElapsed
 
-type call_arg =
-  | ArgString of string
-  | ArgIdent of string
-
+type call_arg = ArgString of string | ArgIdent of string
 type grid_dim = { width : int; height : int }
 
 (* ─── Mutually Recursive Core Types ────────────────────────── *)
@@ -46,16 +40,8 @@ and cond =
   | CNot of cond
   | CCmp of expr * cmp_op * expr
 
-and fn_decl = {
-  fn_name : string;
-  fn_params : string list;
-  fn_body : stmt list;
-}
-
-and fn_call = {
-  call_name : string;
-  call_args : expr list;
-}
+and fn_decl = { fn_name : string; fn_params : string list; fn_body : stmt list }
+and fn_call = { call_name : string; call_args : expr list }
 
 and stmt =
   | SVarDecl of string * expr
@@ -67,15 +53,8 @@ and stmt =
   | SFnCall of fn_call
   | SSpawn of spawn_stmt
 
-and loop_count =
-  | LFinite of int
-  | LInfinite
-  | LCondition of cond
-
-and loop_stmt = {
-  loop_times : loop_count;
-  loop_actions : action list;
-}
+and loop_count = LFinite of int | LInfinite | LCondition of cond
+and loop_stmt = { loop_times : loop_count; loop_actions : action list }
 
 and action =
   | AMove of move_val
@@ -86,18 +65,8 @@ and action =
   | ALoop of loop_stmt
   | ASpawn of spawn_stmt
 
-and move_val =
-  | MUp
-  | MDown
-  | MLeft
-  | MRight
-  | MRandom
-  | MTowards of string
-
-and spawn_stmt = {
-  spawn_name : string;
-  spawn_position : (expr * expr) option;
-}
+and move_val = MUp | MDown | MLeft | MRight | MRandom | MTowards of string
+and spawn_stmt = { spawn_name : string; spawn_position : (expr * expr) option }
 
 and ability_stmt =
   | AbField of ability_field
@@ -118,25 +87,12 @@ and ability_field =
   | FHealthRegen of expr
   | FSpeedBoost of expr
 
-and shape_val =
-  | Manhattan
-  | Chebyshev
-  | Directional
-
+and shape_val = Manhattan | Chebyshev | Directional
 
 (* ─── Block Definitions ────────────────────────────────────── *)
 
-type world_block = {
-  grid : grid_dim;
-  duration : int;
-}
-
-type controls = {
-  up : string;
-  down : string;
-  left : string;
-  right : string;
-}
+type world_block = { grid : grid_dim; duration : int }
+type controls = { up : string; down : string; left : string; right : string }
 
 type player = {
   p_name : string;
@@ -147,11 +103,7 @@ type player = {
   p_controls : controls;
 }
 
-type ability_type =
-  | Active
-  | Permanent
-  | Timed
-  | KillUnlocked
+type ability_type = Active | Permanent | Timed | KillUnlocked
 
 type ability = {
   a_name : string;
@@ -175,13 +127,8 @@ type monster = {
   m_position : (expr * expr) option;
 }
 
-type assign_target =
-  | TgString of string
-  | TgIdent of string
-
-type assign_ability =
-  | AbName of string
-  | AbParam of string
+type assign_target = TgString of string | TgIdent of string
+type assign_ability = AbName of string | AbParam of string
 
 type assign_stmt = {
   asg_target : assign_target;
@@ -201,9 +148,7 @@ type win_field =
   | WKillPlayers of cond
   | WElimination of cond
 
-type win_condition_block = {
-  w_fields : win_field list;
-}
+type win_condition_block = { w_fields : win_field list }
 
 (* ─── Top-Level Program ────────────────────────────────────── *)
 

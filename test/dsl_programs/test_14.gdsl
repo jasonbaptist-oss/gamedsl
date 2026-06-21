@@ -16,9 +16,9 @@ player "Knight" {
 }
 
 ability "Cleave" {
-  type: Permanent
+  type: permanent
   damage: 15 * difficulty_multiplier
-  shape: Manhattan
+  shape: manhattan
   if (difficulty_multiplier > 1) {
     range: 3
   } else {
@@ -43,5 +43,5 @@ monster "Slime" {
 assign "Knight" abilities ["Cleave"]
 
 win_condition {
-  elimination: MonstersKilled("Slime") >= 20
+  elimination: monsters_killed("Slime") >= 20
 }

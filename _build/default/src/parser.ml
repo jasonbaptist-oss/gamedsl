@@ -111,15 +111,14 @@ let expect_filepath p =
         (cur_pos p)
 
 (* expect a KEY_LIT token and return its string payload *)
+(* expect a KEY value and return its string payload *)
 let expect_key p =
   match cur p with
-  | KEY_LIT k ->
-      advance p;
-      k
-  | t ->
-      parse_error
-        (Printf.sprintf "Expected a KEY value but found %s" (token_to_string t))
-        (cur_pos p)
+  | KEY_LIT k -> advance p; k
+  | STRING_LIT k -> advance p; k  (* We added this so standard strings are accepted as keys! *)
+  | t -> parse_error
+             (Printf.sprintf "Expected a KEY value (like \"w\") but found %s" (token_to_string t))
+             (cur_pos p)
 
 (* ============================================================
    SECTION 2 — EXPRESSIONS

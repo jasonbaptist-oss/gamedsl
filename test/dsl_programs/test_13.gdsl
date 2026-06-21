@@ -14,11 +14,11 @@ player "Mage" {
 }
 
 ability "Fireball" {
-  type: Active
+  type: active
   damage: 25
   range: 10
-  shape: Directional
-  key_field: "space"
+  shape: directional
+  key: "space"
 }
 
 monster "Goblin" {
