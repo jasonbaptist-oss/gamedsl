@@ -8,3 +8,6 @@ module Lexer = Gamedsl_lib__Lexer
 
 (** @canonical Gamedsl_lib.Parser *)
 module Parser = Gamedsl_lib__Parser
+
+(** @canonical Gamedsl_lib.Static_analysis *)
+module Static_analysis = Gamedsl_lib__Static_analysis

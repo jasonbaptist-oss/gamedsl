@@ -10,7 +10,10 @@
 
 type binop = Add | Sub | Mul | Div
 type cmp_op = Eq | Neq | Geq | Leq | Gt | Lt
-type entity_ref = RefString of string | RefIdent of string
+
+type entity_ref =
+  | RefString of string
+  | RefIdent of string
 
 type runtime_fn =
   | MonstersKilled
@@ -21,15 +24,13 @@ type runtime_fn =
   | PlayersAlive
   | TimeElapsed
 
-type call_arg = ArgString of string | ArgIdent of string
+type call_arg =
+  | ArgString of string
+  | ArgIdent of string
+
 type grid_dim = { width : int; height : int }
 
-(* ─── Mutually Recursive Core Types ──────────────────────────
-   Expressions, Conditions, Statements, and Actions are all
-   deeply intertwined (e.g. an IF statement contains a condition,
-   which contains an expression, and the IF body contains more
-   statements). We must define them all in one giant block using 'and'.
-*)
+(* ─── Mutually Recursive Core Types ────────────────────────── *)
 
 type expr =
   | EInt of int
@@ -45,22 +46,36 @@ and cond =
   | CNot of cond
   | CCmp of expr * cmp_op * expr
 
+and fn_decl = {
+  fn_name : string;
+  fn_params : string list;
+  fn_body : stmt list;
+}
+
+and fn_call = {
+  call_name : string;
+  call_args : expr list;
+}
+
 and stmt =
   | SVarDecl of string * expr
   | SVarAssign of string * expr
   | SFieldOverride of entity_ref * string list * expr
   | SIf of cond * stmt list * stmt list option
   | SLoop of loop_stmt
-  | SFnDecl of {
-      fn_name : string;
-      fn_params : string list;
-      fn_body : stmt list;
-    }
-  | SFnCall of { call_name : string; call_args : expr list }
+  | SFnDecl of fn_decl
+  | SFnCall of fn_call
   | SSpawn of spawn_stmt
 
-and loop_count = LFinite of int | LInfinite | LCondition of cond
-and loop_stmt = { loop_times : loop_count; loop_actions : action list }
+and loop_count =
+  | LFinite of int
+  | LInfinite
+  | LCondition of cond
+
+and loop_stmt = {
+  loop_times : loop_count;
+  loop_actions : action list;
+}
 
 and action =
   | AMove of move_val
@@ -71,8 +86,18 @@ and action =
   | ALoop of loop_stmt
   | ASpawn of spawn_stmt
 
-and move_val = MUp | MDown | MLeft | MRight | MRandom | MTowards of string
-and spawn_stmt = { spawn_name : string; spawn_position : (expr * expr) option }
+and move_val =
+  | MUp
+  | MDown
+  | MLeft
+  | MRight
+  | MRandom
+  | MTowards of string
+
+and spawn_stmt = {
+  spawn_name : string;
+  spawn_position : (expr * expr) option;
+}
 
 and ability_stmt =
   | AbField of ability_field
@@ -93,14 +118,27 @@ and ability_field =
   | FHealthRegen of expr
   | FSpeedBoost of expr
 
-and shape_val = Manhattan | Chebyshev | Directional
+and shape_val =
+  | Manhattan
+  | Chebyshev
+  | Directional
+
 
 (* ─── Block Definitions ────────────────────────────────────── *)
 
-type world_block = { grid : grid_dim; duration : int }
-type controls = { up : string; down : string; left : string; right : string }
+type world_block = {
+  grid : grid_dim;
+  duration : int;
+}
 
-type player_block = {
+type controls = {
+  up : string;
+  down : string;
+  left : string;
+  right : string;
+}
+
+type player = {
   p_name : string;
   p_health : expr;
   p_img : string option;
@@ -109,9 +147,13 @@ type player_block = {
   p_controls : controls;
 }
 
-type ability_type = Active | Permanent | Timed | KillUnlocked
+type ability_type =
+  | Active
+  | Permanent
+  | Timed
+  | KillUnlocked
 
-type ability_block = {
+type ability = {
   a_name : string;
   a_type : ability_type;
   a_img : string option;
@@ -124,7 +166,7 @@ type movement_val =
   | MvStationary
   | MvLoop of loop_stmt
 
-type monster_block = {
+type monster = {
   m_name : string;
   m_health : expr;
   m_img : string option;
@@ -133,8 +175,13 @@ type monster_block = {
   m_position : (expr * expr) option;
 }
 
-type assign_target = TgString of string | TgIdent of string
-type assign_ability = AbName of string | AbParam of string
+type assign_target =
+  | TgString of string
+  | TgIdent of string
+
+type assign_ability =
+  | AbName of string
+  | AbParam of string
 
 type assign_stmt = {
   asg_target : assign_target;
@@ -154,16 +201,18 @@ type win_field =
   | WKillPlayers of cond
   | WElimination of cond
 
-type win_condition_block = { w_fields : win_field list }
+type win_condition_block = {
+  w_fields : win_field list;
+}
 
 (* ─── Top-Level Program ────────────────────────────────────── *)
 
 type program = {
   pre_stmts : stmt list;
   prog_world : world_block;
-  players : player_block list;
-  abilities : ability_block list;
-  monsters : monster_block list;
+  players : player list;
+  abilities : ability list;
+  monsters : monster list;
   assigns : assign_stmt list;
   obstacles : obstacle_block list;
   win_condition : win_condition_block;

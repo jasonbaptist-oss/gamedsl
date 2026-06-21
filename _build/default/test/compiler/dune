@@ -1,4 +1,5 @@
 (tests
  (names test_lexer test_parser)
  (libraries gamedsl_lib ounit2)
- (deps (source_tree ../dsl_programs)))
+ (deps
+  (source_tree ../dsl_programs)))

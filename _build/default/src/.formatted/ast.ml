@@ -24,12 +24,7 @@ type runtime_fn =
 type call_arg = ArgString of string | ArgIdent of string
 type grid_dim = { width : int; height : int }
 
-(* ─── Mutually Recursive Core Types ──────────────────────────
-   Expressions, Conditions, Statements, and Actions are all
-   deeply intertwined (e.g. an IF statement contains a condition,
-   which contains an expression, and the IF body contains more
-   statements). We must define them all in one giant block using 'and'.
-*)
+(* ─── Mutually Recursive Core Types ────────────────────────── *)
 
 type expr =
   | EInt of int
@@ -45,18 +40,17 @@ and cond =
   | CNot of cond
   | CCmp of expr * cmp_op * expr
 
+and fn_decl = { fn_name : string; fn_params : string list; fn_body : stmt list }
+and fn_call = { call_name : string; call_args : expr list }
+
 and stmt =
   | SVarDecl of string * expr
   | SVarAssign of string * expr
   | SFieldOverride of entity_ref * string list * expr
   | SIf of cond * stmt list * stmt list option
   | SLoop of loop_stmt
-  | SFnDecl of {
-      fn_name : string;
-      fn_params : string list;
-      fn_body : stmt list;
-    }
-  | SFnCall of { call_name : string; call_args : expr list }
+  | SFnDecl of fn_decl
+  | SFnCall of fn_call
   | SSpawn of spawn_stmt
 
 and loop_count = LFinite of int | LInfinite | LCondition of cond
@@ -100,7 +94,7 @@ and shape_val = Manhattan | Chebyshev | Directional
 type world_block = { grid : grid_dim; duration : int }
 type controls = { up : string; down : string; left : string; right : string }
 
-type player_block = {
+type player = {
   p_name : string;
   p_health : expr;
   p_img : string option;
@@ -111,7 +105,7 @@ type player_block = {
 
 type ability_type = Active | Permanent | Timed | KillUnlocked
 
-type ability_block = {
+type ability = {
   a_name : string;
   a_type : ability_type;
   a_img : string option;
@@ -124,7 +118,7 @@ type movement_val =
   | MvStationary
   | MvLoop of loop_stmt
 
-type monster_block = {
+type monster = {
   m_name : string;
   m_health : expr;
   m_img : string option;
@@ -161,9 +155,9 @@ type win_condition_block = { w_fields : win_field list }
 type program = {
   pre_stmts : stmt list;
   prog_world : world_block;
-  players : player_block list;
-  abilities : ability_block list;
-  monsters : monster_block list;
+  players : player list;
+  abilities : ability list;
+  monsters : monster list;
   assigns : assign_stmt list;
   obstacles : obstacle_block list;
   win_condition : win_condition_block;
