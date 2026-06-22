@@ -212,19 +212,19 @@ let check_key_conflicts prog tbl r =
                              "Ability \"%s\" assigned to monster \"%s\" uses \
                               key \"%s\", but monster abilities must use AUTO"
                              aname name k);
-                   if is_player tbl name then
-                        begin match Hashtbl.find_opt seen k with
+                      if is_player tbl name then (
+                        match Hashtbl.find_opt seen k with
                         | Some other_where ->
                             add_error r
                               (Printf.sprintf
-                                 "Key conflict: ability \"%s\" key \"%s\" \
-                                  collides with %s"
+                                 "Key conflict: ability \"%s\" key \"%s\" collides with %s"
                                  aname k other_where)
                         | None ->
                             Hashtbl.add seen k
                               (Printf.sprintf "ability \"%s\" (player \"%s\")"
                                  aname name)
-                      end))
+                      )
+                    ))
             names)
     prog.assigns
 

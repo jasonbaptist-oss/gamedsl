@@ -199,7 +199,7 @@ let check_key_conflicts prog tbl r =
               | Some ab -> (
                   match ability_key ab with
                   | None -> () (* permanent abilities have no key — fine *)
-                  | Some k ->
+                  | Some k -> (
                       if is_player tbl name && k = "AUTO" then
                         add_error r
                           (Printf.sprintf
@@ -212,7 +212,7 @@ let check_key_conflicts prog tbl r =
                              "Ability \"%s\" assigned to monster \"%s\" uses \
                               key \"%s\", but monster abilities must use AUTO"
                              aname name k);
-                      if is_player tbl name then begin
+                      if is_player tbl name then
                         match Hashtbl.find_opt seen k with
                         | Some other_where ->
                             add_error r
@@ -223,8 +223,7 @@ let check_key_conflicts prog tbl r =
                         | None ->
                             Hashtbl.add seen k
                               (Printf.sprintf "ability \"%s\" (player \"%s\")"
-                                 aname name)
-                      end))
+                                 aname name))))
             names)
     prog.assigns
 
