@@ -212,7 +212,7 @@ let check_key_conflicts prog tbl r =
                              "Ability \"%s\" assigned to monster \"%s\" uses \
                               key \"%s\", but monster abilities must use AUTO"
                              aname name k);
-                      if is_player tbl name then 
+                   if is_player tbl name then
                         begin match Hashtbl.find_opt seen k with
                         | Some other_where ->
                             add_error r
