@@ -1,7 +1,17 @@
-# dune promote
+# dune runtest
 # OCAMLPARAM: unset
 # Shared cache: enabled-except-user-rules
 # Shared cache location: /Users/aaronjasonbaptist/.cache/dune/db
 # Workspace root: "/Users/aaronjasonbaptist/Documents/IIT
 # Kharagpur/Academic/Sem4 Summer/Project/gamedsl"
 # Auto-detected concurrency: 12
+# Dune context:
+#  { name = "default"
+#  ; kind = "default"
+#  ; profile = Dev
+#  ; merlin = true
+#  ; fdo_target_exe = None
+#  ; build_dir = In_build_dir "default"
+#  ; instrument_with = []
+#  }
+$ /Users/aaronjasonbaptist/.opam/5.4.0/bin/ocamlc.opt -config > /var/folders/nn/36pffhzx2nsdyw9_5rh63njh0000gn/T/dune_2cadd2_output
