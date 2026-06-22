@@ -5,3 +5,6 @@ module Test_lexer = Dune__exe__Test_lexer
 
 (** @canonical Dune__exe.Test_parser *)
 module Test_parser = Dune__exe__Test_parser
+
+(** @canonical Dune__exe.Test_static_analysis *)
+module Test_static_analysis = Dune__exe__Test_static_analysis

@@ -1,0 +1,54 @@
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL static analyzer:0:Global structure:1:no win fields.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL static analyzer:0:Global structure:1:no win fields is successful.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL static analyzer:0:Global structure:1:no win fields.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL static analyzer:0:Global structure:3:zero duration.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL static analyzer:0:Global structure:3:zero duration is successful.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL static analyzer:0:Global structure:3:zero duration.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL static analyzer:1:Symbol tables / duplicates:1:duplicate monster.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL static analyzer:1:Symbol tables / duplicates:1:duplicate monster is successful.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL static analyzer:1:Symbol tables / duplicates:1:duplicate monster.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL static analyzer:1:Symbol tables / duplicates:3:unique names ok.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL static analyzer:1:Symbol tables / duplicates:3:unique names ok is successful.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL static analyzer:1:Symbol tables / duplicates:3:unique names ok.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL static analyzer:2:Key conflicts:2:player ability AUTO key.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL static analyzer:2:Key conflicts:2:player ability AUTO key is successful.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL static analyzer:2:Key conflicts:2:player ability AUTO key.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL static analyzer:2:Key conflicts:3:monster ability non-AUTO.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL static analyzer:2:Key conflicts:3:monster ability non-AUTO is successful.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL static analyzer:2:Key conflicts:3:monster ability non-AUTO.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL static analyzer:3:Ability type field rules:2:permanent no effect field.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL static analyzer:3:Ability type field rules:2:permanent no effect field is successful.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL static analyzer:3:Ability type field rules:2:permanent no effect field.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL static analyzer:3:Ability type field rules:3:permanent with key.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL static analyzer:3:Ability type field rules:3:permanent with key is successful.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL static analyzer:3:Ability type field rules:3:permanent with key.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL static analyzer:3:Ability type field rules:6:spread without directional.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL static analyzer:3:Ability type field rules:6:spread without directional is successful.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL static analyzer:3:Ability type field rules:6:spread without directional.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL static analyzer:4:Assign statement:0:undefined target.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL static analyzer:4:Assign statement:0:undefined target is successful.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL static analyzer:4:Assign statement:0:undefined target.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL static analyzer:4:Assign statement:3:valid assign ok.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL static analyzer:4:Assign statement:3:valid assign ok is successful.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL static analyzer:4:Assign statement:3:valid assign ok.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL static analyzer:5:Monster checks:1:zero count ok.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL static analyzer:5:Monster checks:1:zero count ok is successful.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL static analyzer:5:Monster checks:1:zero count ok.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL static analyzer:5:Monster checks:3:towards defined player.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL static analyzer:5:Monster checks:3:towards defined player is successful.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL static analyzer:5:Monster checks:3:towards defined player.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL static analyzer:6:Spawn statement:1:defined monster ok.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL static analyzer:6:Spawn statement:1:defined monster ok is successful.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL static analyzer:6:Spawn statement:1:defined monster ok.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL static analyzer:7:Function checks:0:duplicate param.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL static analyzer:7:Function checks:0:duplicate param is successful.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL static analyzer:7:Function checks:0:duplicate param.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL static analyzer:7:Function checks:2:call undefined.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL static analyzer:7:Function checks:2:call undefined is successful.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL static analyzer:7:Function checks:2:call undefined.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL static analyzer:7:Function checks:4:correct arity ok.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL static analyzer:7:Function checks:4:correct arity ok is successful.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL static analyzer:7:Function checks:4:correct arity ok.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Start test GameDSL static analyzer:8:Entity reference checks:0:undefined entity field override.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: Test GameDSL static analyzer:8:Entity reference checks:0:undefined entity field override is successful.
+2026-06-22T04:01:03+00:00 Aarons-MacBook-Pro.local#02 I: End test GameDSL static analyzer:8:Entity reference checks:0:undefined entity field override.
