@@ -3,6 +3,9 @@
 (** @canonical Gamedsl_lib.Ast *)
 module Ast = Gamedsl_lib__Ast
 
+(** @canonical Gamedsl_lib.Codegen *)
+module Codegen = Gamedsl_lib__Codegen
+
 (** @canonical Gamedsl_lib.Lexer *)
 module Lexer = Gamedsl_lib__Lexer
 
