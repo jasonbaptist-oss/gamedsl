@@ -30,6 +30,7 @@ type expr =
   | EInt of int
   | EFloat of float
   | EVar of string
+  | EString of string (* <-- Add this line! *)
   | EBinop of binop * expr * expr
   | ERuntimeCall of runtime_fn * call_arg option
   | EFieldRead of entity_ref * string list
@@ -64,6 +65,7 @@ and action =
   | AField of entity_ref * string list * expr
   | ALoop of loop_stmt
   | ASpawn of spawn_stmt
+  | AFnCall of fn_call
 
 and move_val = MUp | MDown | MLeft | MRight | MRandom | MTowards of string
 and spawn_stmt = { spawn_name : string; spawn_position : (expr * expr) option }

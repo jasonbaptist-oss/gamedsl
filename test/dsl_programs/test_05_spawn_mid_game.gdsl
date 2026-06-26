@@ -11,7 +11,7 @@ world {
 player "P1" {
   health: 100
   controls {
-    up: W  down: S  left: A  right: D
+    up: W  down: S  left: A right: D
   }
 }
 

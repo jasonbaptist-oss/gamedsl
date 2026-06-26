@@ -5,11 +5,11 @@ world {
 
 player "Mage" {
   health: 80
-  controls { 
-    up: "w" 
-    down: "s" 
-    left: "a" 
-    right: "d" 
+  controls {
+    up: W
+    down: S
+    left: A
+    right: D
   }
 }
 
@@ -18,7 +18,7 @@ ability "Fireball" {
   damage: 25
   range: 10
   shape: directional
-  key: "space"
+  key: SPACE
 }
 
 monster "Goblin" {
@@ -36,5 +36,5 @@ obstacle "Wall" {
 }
 
 win_condition {
-  kill_monsters: MonsterCount == 0 and not (PlayerHealth < 10)
+  kill_monsters: monster_count("Goblin") == 0 and not (player_health("Mage") < 10)
 }

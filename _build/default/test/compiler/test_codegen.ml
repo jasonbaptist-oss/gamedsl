@@ -25,8 +25,9 @@ open Gamedsl_lib.Codegen
 
 let contains_substring needle haystack =
   let nlen = String.length needle and hlen = String.length haystack in
-  let rec go i = i + nlen <= hlen &&
-    (String.sub haystack i nlen = needle || go (i + 1)) in
+  let rec go i =
+    i + nlen <= hlen && (String.sub haystack i nlen = needle || go (i + 1))
+  in
   go 0
 
 let assert_contains haystack needle =
@@ -36,21 +37,17 @@ let assert_contains haystack needle =
 
 let assert_not_contains haystack needle =
   assert_bool
-    (Printf.sprintf "expected output NOT to contain %S, got:\n%s" needle haystack)
+    (Printf.sprintf "expected output NOT to contain %S, got:\n%s" needle
+       haystack)
     (not (contains_substring needle haystack))
 
 (* ============================================================
    SECTION A — expressions
    ============================================================ *)
 
-let test_emit_int _ =
-  assert_equal "42" (emit_expr (EInt 42))
-
-let test_emit_float _ =
-  assert_equal "3.14" (emit_expr (EFloat 3.14))
-
-let test_emit_var _ =
-  assert_equal "wave" (emit_expr (EVar "wave"))
+let test_emit_int _ = assert_equal "42" (emit_expr (EInt 42))
+let test_emit_float _ = assert_equal "3.14" (emit_expr (EFloat 3.14))
+let test_emit_var _ = assert_equal "wave" (emit_expr (EVar "wave"))
 
 let test_emit_binop_add _ =
   assert_equal "(2 + 3)" (emit_expr (EBinop (Add, EInt 2, EInt 3)))
@@ -70,7 +67,8 @@ let test_emit_runtime_call_with_ident_arg _ =
   assert_equal "game_state.monster_count(name)" (emit_expr e)
 
 let test_emit_runtime_call_no_arg _ =
-  assert_equal "game_state.players_alive" (emit_expr (ERuntimeCall (PlayersAlive, None)))
+  assert_equal "game_state.players_alive"
+    (emit_expr (ERuntimeCall (PlayersAlive, None)))
 
 let test_emit_field_read_literal_entity _ =
   let e = EFieldRead (RefString "Goblin", [ "health" ]) in
@@ -108,14 +106,31 @@ let test_emit_condition_not _ =
 
 let default_world = { grid = { width = 10; height = 10 }; duration = 30 }
 let default_controls = { up = "W"; down = "S"; left = "A"; right = "D" }
-let mk_player name = { p_name = name; p_health = EInt 100; p_img = None;
-                        p_active = true; p_position = None; p_controls = default_controls }
+
+let mk_player name =
+  {
+    p_name = name;
+    p_health = EInt 100;
+    p_img = None;
+    p_active = true;
+    p_position = None;
+    p_controls = default_controls;
+  }
+
 let base_program ?(players = [ mk_player "P1" ]) ?(monsters = [])
-    ?(abilities = []) ?(assigns = []) ?(obstacles = [])
-    ?(pre = []) ?(post = []) () =
-  { pre_stmts = pre; prog_world = default_world; players; abilities;
-    monsters; assigns; obstacles;
-    win_condition = { w_fields = [ WSurvive 30 ] }; post_stmts = post }
+    ?(abilities = []) ?(assigns = []) ?(obstacles = []) ?(pre = []) ?(post = [])
+    () =
+  {
+    pre_stmts = pre;
+    prog_world = default_world;
+    players;
+    abilities;
+    monsters;
+    assigns;
+    obstacles;
+    win_condition = { w_fields = [ WSurvive 30 ] };
+    post_stmts = post;
+  }
 
 let test_emit_var_decl_in_program _ =
   let prog = base_program ~pre:[ SVarDecl ("wave", EInt 1) ] () in
@@ -123,47 +138,83 @@ let test_emit_var_decl_in_program _ =
   assert_contains out "wave = 1"
 
 let test_emit_var_assign_in_program _ =
-  let prog = base_program
-      ~post:[ SVarAssign ("wave", EBinop (Add, EVar "wave", EInt 1)) ] () in
+  let prog =
+    base_program
+      ~post:[ SVarAssign ("wave", EBinop (Add, EVar "wave", EInt 1)) ]
+      ()
+  in
   let out = generate prog in
   assert_contains out "wave = (wave + 1)"
 
 let test_emit_field_override_in_program _ =
-  let prog = base_program
-      ~monsters:[ { m_name = "Goblin"; m_health = EInt 50; m_img = None;
-                    m_movement = MvRandom; m_count = EInt 1; m_position = None } ]
-      ~post:[ SFieldOverride (RefString "Goblin", [ "health" ], EInt 200) ] () in
+  let prog =
+    base_program
+      ~monsters:
+        [
+          {
+            m_name = "Goblin";
+            m_health = EInt 50;
+            m_img = None;
+            m_movement = MvRandom;
+            m_count = EInt 1;
+            m_position = None;
+          };
+        ]
+      ~post:[ SFieldOverride (RefString "Goblin", [ "health" ], EInt 200) ]
+      ()
+  in
   let out = generate prog in
   assert_contains out "entity_registry[\"Goblin\"].health = 200"
 
 let test_emit_if_else_in_program _ =
-  let prog = base_program
-      ~post:[ SIf (CCmp (EVar "x", Gt, EInt 5),
-                   [ SVarAssign ("x", EInt 0) ],
-                   Some [ SVarAssign ("x", EInt 1) ]) ] () in
+  let prog =
+    base_program
+      ~post:
+        [
+          SIf
+            ( CCmp (EVar "x", Gt, EInt 5),
+              [ SVarAssign ("x", EInt 0) ],
+              Some [ SVarAssign ("x", EInt 1) ] );
+        ]
+      ()
+  in
   let out = generate prog in
   assert_contains out "if (x > 5):";
   assert_contains out "else:"
 
 let test_emit_fn_decl_and_call_in_program _ =
-  let f = { fn_name = "boost"; fn_params = [ "n" ];
-            fn_body = [ SVarAssign ("n", EBinop (Add, EVar "n", EInt 1)) ] } in
-  let prog = base_program
-      ~pre:[ SFnDecl f ]
-      ~post:[ SFnCall { call_name = "boost"; call_args = [ EInt 5 ] } ] () in
+  let f =
+    {
+      fn_name = "boost";
+      fn_params = [ "n" ];
+      fn_body = [ SVarAssign ("n", EBinop (Add, EVar "n", EInt 1)) ];
+    }
+  in
+  let prog =
+    base_program ~pre:[ SFnDecl f ]
+      ~post:[ SFnCall { call_name = "boost"; call_args = [ EInt 5 ] } ]
+      ()
+  in
   let out = generate prog in
   assert_contains out "def boost(n):";
   assert_contains out "boost(5)"
 
 let test_emit_spawn_with_position_in_program _ =
-  let prog = base_program
-      ~post:[ SSpawn { spawn_name = "P2"; spawn_position = Some (EInt 3, EInt 4) } ] () in
+  let prog =
+    base_program
+      ~post:
+        [ SSpawn { spawn_name = "P2"; spawn_position = Some (EInt 3, EInt 4) } ]
+      ()
+  in
   let out = generate prog in
   assert_contains out "game_state.spawn(\"P2\", position=(3, 4))"
 
 let test_emit_spawn_without_position_in_program _ =
-  let prog = base_program
-      ~post:[ SSpawn { spawn_name = "P2"; spawn_position = None } ] () in
+  let prog =
+    base_program
+      ~post:[ SSpawn { spawn_name = "P2"; spawn_position = None } ]
+      ()
+  in
   let out = generate prog in
   assert_contains out "game_state.spawn(\"P2\")";
   assert_not_contains out "game_state.spawn(\"P2\", position"
@@ -187,15 +238,23 @@ let test_emit_loop_infinite_in_program _ =
   assert_contains out "self.move_random()"
 
 let test_emit_loop_condition_in_program _ =
-  let loop = { loop_times = LCondition (CCmp (EVar "time_elapsed", Lt, EInt 60));
-               loop_actions = [ AWait 5 ] } in
+  let loop =
+    {
+      loop_times = LCondition (CCmp (EVar "time_elapsed", Lt, EInt 60));
+      loop_actions = [ AWait 5 ];
+    }
+  in
   let prog = base_program ~post:[ SLoop loop ] () in
   let out = generate prog in
   assert_contains out "while (time_elapsed < 60):"
 
 let test_emit_move_directions_in_program _ =
-  let loop = { loop_times = LFinite 1;
-               loop_actions = [ AMove MUp; AMove MDown; AMove MLeft; AMove MRight ] } in
+  let loop =
+    {
+      loop_times = LFinite 1;
+      loop_actions = [ AMove MUp; AMove MDown; AMove MLeft; AMove MRight ];
+    }
+  in
   let prog = base_program ~post:[ SLoop loop ] () in
   let out = generate prog in
   assert_contains out "self.move(0, -1)";
@@ -204,7 +263,9 @@ let test_emit_move_directions_in_program _ =
   assert_contains out "self.move(1, 0)"
 
 let test_emit_move_towards_in_program _ =
-  let loop = { loop_times = LFinite 1; loop_actions = [ AMove (MTowards "P1") ] } in
+  let loop =
+    { loop_times = LFinite 1; loop_actions = [ AMove (MTowards "P1") ] }
+  in
   let prog = base_program ~post:[ SLoop loop ] () in
   let out = generate prog in
   assert_contains out "self.move_towards(\"P1\")"
@@ -242,24 +303,47 @@ let test_emit_player_active_false _ =
   assert_contains out "active=False"
 
 let test_emit_ability_active_type _ =
-  let ab = { a_name = "Sword"; a_type = Active; a_img = None;
-             a_body = [ AbField (FKey "SPACE"); AbField (FDamage (EInt 30));
-                        AbField (FRange (EInt 2)); AbField (FShape Manhattan) ] } in
+  let ab =
+    {
+      a_name = "Sword";
+      a_type = Active;
+      a_img = None;
+      a_body =
+        [
+          AbField (FKey "SPACE");
+          AbField (FDamage (EInt 30));
+          AbField (FRange (EInt 2));
+          AbField (FShape Manhattan);
+        ];
+    }
+  in
   let prog = base_program ~abilities:[ ab ] () in
   let out = generate prog in
   assert_contains out "def _compute_Sword_fields():";
   assert_contains out "fields[\"damage\"] = 30";
   assert_contains out "fields[\"shape\"] = \"manhattan\"";
-  assert_contains out "ability_registry[\"Sword\"] = Ability(\"Sword\", type=\"active\""
+  assert_contains out
+    "ability_registry[\"Sword\"] = Ability(\"Sword\", type=\"active\""
 
 let test_emit_ability_with_local_var_and_if _ =
-  let ab = { a_name = "Rage"; a_type = KillUnlocked; a_img = None;
-             a_body = [ AbField (FKey "Q"); AbField (FRequiredKills (EInt 5));
-                        AbVarDecl ("boost", EInt 10);
-                        AbIf (CCmp (EVar "boost", Gt, EInt 5),
-                              [ AbVarAssign ("boost", EBinop (Mul, EVar "boost", EInt 2)) ],
-                              None);
-                        AbField (FDamageMultiplier (EVar "boost")) ] } in
+  let ab =
+    {
+      a_name = "Rage";
+      a_type = KillUnlocked;
+      a_img = None;
+      a_body =
+        [
+          AbField (FKey "Q");
+          AbField (FRequiredKills (EInt 5));
+          AbVarDecl ("boost", EInt 10);
+          AbIf
+            ( CCmp (EVar "boost", Gt, EInt 5),
+              [ AbVarAssign ("boost", EBinop (Mul, EVar "boost", EInt 2)) ],
+              None );
+          AbField (FDamageMultiplier (EVar "boost"));
+        ];
+    }
+  in
   let prog = base_program ~abilities:[ ab ] () in
   let out = generate prog in
   assert_contains out "boost = 10";
@@ -268,39 +352,78 @@ let test_emit_ability_with_local_var_and_if _ =
   assert_contains out "fields[\"damage_multiplier\"] = boost"
 
 let test_emit_monster_simple_movement _ =
-  let m = { m_name = "Goblin"; m_health = EInt 50; m_img = None;
-            m_movement = MvTowards "P1"; m_count = EInt 3; m_position = None } in
+  let m =
+    {
+      m_name = "Goblin";
+      m_health = EInt 50;
+      m_img = None;
+      m_movement = MvTowards "P1";
+      m_count = EInt 3;
+      m_position = None;
+    }
+  in
   let prog = base_program ~monsters:[ m ] () in
   let out = generate prog in
-  assert_contains out "monster_registry[\"Goblin\"] = MonsterType(\"Goblin\", health=50";
+  assert_contains out
+    "monster_registry[\"Goblin\"] = MonsterType(\"Goblin\", health=50";
   assert_contains out "movement=\"towards:P1\""
 
 let test_emit_monster_loop_movement _ =
-  let loop = { loop_times = LInfinite; loop_actions = [ AMove MRight; AWait 1 ] } in
-  let m = { m_name = "Guard"; m_health = EInt 80; m_img = None;
-            m_movement = MvLoop loop; m_count = EInt 2; m_position = None } in
+  let loop =
+    { loop_times = LInfinite; loop_actions = [ AMove MRight; AWait 1 ] }
+  in
+  let m =
+    {
+      m_name = "Guard";
+      m_health = EInt 80;
+      m_img = None;
+      m_movement = MvLoop loop;
+      m_count = EInt 2;
+      m_position = None;
+    }
+  in
   let prog = base_program ~monsters:[ m ] () in
   let out = generate prog in
   assert_contains out "def _movement_Guard(self):";
   assert_contains out "movement=_movement_Guard"
 
 let test_emit_monster_zero_count _ =
-  let m = { m_name = "Boss"; m_health = EInt 500; m_img = None;
-            m_movement = MvStationary; m_count = EInt 0; m_position = None } in
+  let m =
+    {
+      m_name = "Boss";
+      m_health = EInt 500;
+      m_img = None;
+      m_movement = MvStationary;
+      m_count = EInt 0;
+      m_position = None;
+    }
+  in
   let prog = base_program ~monsters:[ m ] () in
   let out = generate prog in
   assert_contains out "count=0"
 
 let test_emit_obstacle_with_size _ =
-  let o = { o_name = "Wall"; o_position = (EInt 5, EInt 5);
-            o_size = Some { width = 3; height = 1 }; o_img = None } in
+  let o =
+    {
+      o_name = "Wall";
+      o_position = (EInt 5, EInt 5);
+      o_size = Some { width = 3; height = 1 };
+      o_img = None;
+    }
+  in
   let prog = base_program ~obstacles:[ o ] () in
   let out = generate prog in
   assert_contains out "Obstacle(\"Wall\", 5, 5, 3, 1"
 
 let test_emit_obstacle_default_size _ =
-  let o = { o_name = "Pillar"; o_position = (EInt 2, EInt 2);
-            o_size = None; o_img = None } in
+  let o =
+    {
+      o_name = "Pillar";
+      o_position = (EInt 2, EInt 2);
+      o_size = None;
+      o_img = None;
+    }
+  in
   let prog = base_program ~obstacles:[ o ] () in
   let out = generate prog in
   assert_contains out "Obstacle(\"Pillar\", 2, 2, 1, 1"
@@ -312,23 +435,39 @@ let test_emit_assign_literal_target _ =
   assert_contains out "game_state.assign_abilities(\"P1\", [\"Sword\"])"
 
 let test_emit_assign_param_target _ =
-  let a = { asg_target = TgIdent "target"; asg_abilities = [ AbParam "ab_name" ] } in
+  let a =
+    { asg_target = TgIdent "target"; asg_abilities = [ AbParam "ab_name" ] }
+  in
   let prog = base_program ~assigns:[ a ] () in
   let out = generate prog in
   assert_contains out "game_state.assign_abilities(target, [ab_name])"
 
 let test_emit_win_condition_single_field _ =
-  let prog = { (base_program ())
-               with win_condition = { w_fields = [ WSurvive 60 ] } } in
+  let prog =
+    { (base_program ()) with win_condition = { w_fields = [ WSurvive 60 ] } }
+  in
   let out = generate prog in
   assert_contains out "def check_win_condition():";
   assert_contains out "game_state.time_elapsed >= 60"
 
 let test_emit_win_condition_multiple_fields_ored _ =
-  let prog = { (base_program ())
-               with win_condition = { w_fields = [
-                 WKillMonsters (CCmp (ERuntimeCall (MonstersKilled, Some (ArgString "Goblin")), Geq, EInt 5));
-                 WSurvive 120 ] } } in
+  let prog =
+    {
+      (base_program ()) with
+      win_condition =
+        {
+          w_fields =
+            [
+              WKillMonsters
+                (CCmp
+                   ( ERuntimeCall (MonstersKilled, Some (ArgString "Goblin")),
+                     Geq,
+                     EInt 5 ));
+              WSurvive 120;
+            ];
+        };
+    }
+  in
   let out = generate prog in
   assert_contains out " or "
 
@@ -349,15 +488,43 @@ let test_full_program_imports_runtime _ =
   assert_contains out "from runtime import"
 
 let test_full_program_combines_all_blocks _ =
-  let ab = { a_name = "Sword"; a_type = Active; a_img = None;
-             a_body = [ AbField (FKey "SPACE"); AbField (FDamage (EInt 30));
-                        AbField (FRange (EInt 2)); AbField (FShape Manhattan) ] } in
-  let m = { m_name = "Goblin"; m_health = EInt 50; m_img = None;
-            m_movement = MvTowards "P1"; m_count = EInt 3; m_position = None } in
-  let o = { o_name = "Wall"; o_position = (EInt 1, EInt 1); o_size = None; o_img = None } in
+  let ab =
+    {
+      a_name = "Sword";
+      a_type = Active;
+      a_img = None;
+      a_body =
+        [
+          AbField (FKey "SPACE");
+          AbField (FDamage (EInt 30));
+          AbField (FRange (EInt 2));
+          AbField (FShape Manhattan);
+        ];
+    }
+  in
+  let m =
+    {
+      m_name = "Goblin";
+      m_health = EInt 50;
+      m_img = None;
+      m_movement = MvTowards "P1";
+      m_count = EInt 3;
+      m_position = None;
+    }
+  in
+  let o =
+    {
+      o_name = "Wall";
+      o_position = (EInt 1, EInt 1);
+      o_size = None;
+      o_img = None;
+    }
+  in
   let a = { asg_target = TgString "P1"; asg_abilities = [ AbName "Sword" ] } in
-  let prog = base_program ~abilities:[ ab ] ~monsters:[ m ]
-      ~obstacles:[ o ] ~assigns:[ a ] () in
+  let prog =
+    base_program ~abilities:[ ab ] ~monsters:[ m ] ~obstacles:[ o ]
+      ~assigns:[ a ] ()
+  in
   let out = generate prog in
   assert_contains out "Player(\"P1\"";
   assert_contains out "ability_registry[\"Sword\"]";
@@ -369,74 +536,89 @@ let test_full_program_combines_all_blocks _ =
    SUITE ASSEMBLY
    ============================================================ *)
 
-let expr_tests = "Expressions" >::: [
-  "int"                  >:: test_emit_int;
-  "float"                >:: test_emit_float;
-  "var"                  >:: test_emit_var;
-  "binop add"            >:: test_emit_binop_add;
-  "binop nested"         >:: test_emit_binop_nested_precedence;
-  "runtime call string"  >:: test_emit_runtime_call_with_string_arg;
-  "runtime call ident"   >:: test_emit_runtime_call_with_ident_arg;
-  "runtime call no arg"  >:: test_emit_runtime_call_no_arg;
-  "field read literal"   >:: test_emit_field_read_literal_entity;
-  "field read param"     >:: test_emit_field_read_param_entity;
-]
+let expr_tests =
+  "Expressions"
+  >::: [
+         "int" >:: test_emit_int;
+         "float" >:: test_emit_float;
+         "var" >:: test_emit_var;
+         "binop add" >:: test_emit_binop_add;
+         "binop nested" >:: test_emit_binop_nested_precedence;
+         "runtime call string" >:: test_emit_runtime_call_with_string_arg;
+         "runtime call ident" >:: test_emit_runtime_call_with_ident_arg;
+         "runtime call no arg" >:: test_emit_runtime_call_no_arg;
+         "field read literal" >:: test_emit_field_read_literal_entity;
+         "field read param" >:: test_emit_field_read_param_entity;
+       ]
 
-let condition_tests = "Conditions" >::: [
-  "cmp"  >:: test_emit_condition_cmp;
-  "and"  >:: test_emit_condition_and;
-  "or"   >:: test_emit_condition_or;
-  "not"  >:: test_emit_condition_not;
-]
+let condition_tests =
+  "Conditions"
+  >::: [
+         "cmp" >:: test_emit_condition_cmp;
+         "and" >:: test_emit_condition_and;
+         "or" >:: test_emit_condition_or;
+         "not" >:: test_emit_condition_not;
+       ]
 
-let stmt_tests = "Statements" >::: [
-  "var decl"           >:: test_emit_var_decl_in_program;
-  "var assign"         >:: test_emit_var_assign_in_program;
-  "field override"     >:: test_emit_field_override_in_program;
-  "if else"            >:: test_emit_if_else_in_program;
-  "fn decl and call"   >:: test_emit_fn_decl_and_call_in_program;
-  "spawn with pos"     >:: test_emit_spawn_with_position_in_program;
-  "spawn without pos"  >:: test_emit_spawn_without_position_in_program;
-]
+let stmt_tests =
+  "Statements"
+  >::: [
+         "var decl" >:: test_emit_var_decl_in_program;
+         "var assign" >:: test_emit_var_assign_in_program;
+         "field override" >:: test_emit_field_override_in_program;
+         "if else" >:: test_emit_if_else_in_program;
+         "fn decl and call" >:: test_emit_fn_decl_and_call_in_program;
+         "spawn with pos" >:: test_emit_spawn_with_position_in_program;
+         "spawn without pos" >:: test_emit_spawn_without_position_in_program;
+       ]
 
-let loop_tests = "Loop statement" >::: [
-  "finite"        >:: test_emit_loop_finite_in_program;
-  "infinite"      >:: test_emit_loop_infinite_in_program;
-  "condition"     >:: test_emit_loop_condition_in_program;
-  "move dirs"     >:: test_emit_move_directions_in_program;
-  "move towards"  >:: test_emit_move_towards_in_program;
-  "nested loop"   >:: test_emit_nested_loop_in_program;
-]
+let loop_tests =
+  "Loop statement"
+  >::: [
+         "finite" >:: test_emit_loop_finite_in_program;
+         "infinite" >:: test_emit_loop_infinite_in_program;
+         "condition" >:: test_emit_loop_condition_in_program;
+         "move dirs" >:: test_emit_move_directions_in_program;
+         "move towards" >:: test_emit_move_towards_in_program;
+         "nested loop" >:: test_emit_nested_loop_in_program;
+       ]
 
-let block_tests = "World/Player/Ability/Monster/Obstacle/Assign/Win" >::: [
-  "world constants"           >:: test_emit_world_constants;
-  "player block"               >:: test_emit_player_block;
-  "player active false"        >:: test_emit_player_active_false;
-  "ability active type"        >:: test_emit_ability_active_type;
-  "ability local var and if"   >:: test_emit_ability_with_local_var_and_if;
-  "monster simple movement"    >:: test_emit_monster_simple_movement;
-  "monster loop movement"      >:: test_emit_monster_loop_movement;
-  "monster zero count"         >:: test_emit_monster_zero_count;
-  "obstacle with size"         >:: test_emit_obstacle_with_size;
-  "obstacle default size"      >:: test_emit_obstacle_default_size;
-  "assign literal target"      >:: test_emit_assign_literal_target;
-  "assign param target"        >:: test_emit_assign_param_target;
-  "win condition single"       >:: test_emit_win_condition_single_field;
-  "win condition multi or"     >:: test_emit_win_condition_multiple_fields_ored;
-]
+let block_tests =
+  "World/Player/Ability/Monster/Obstacle/Assign/Win"
+  >::: [
+         "world constants" >:: test_emit_world_constants;
+         "player block" >:: test_emit_player_block;
+         "player active false" >:: test_emit_player_active_false;
+         "ability active type" >:: test_emit_ability_active_type;
+         "ability local var and if" >:: test_emit_ability_with_local_var_and_if;
+         "monster simple movement" >:: test_emit_monster_simple_movement;
+         "monster loop movement" >:: test_emit_monster_loop_movement;
+         "monster zero count" >:: test_emit_monster_zero_count;
+         "obstacle with size" >:: test_emit_obstacle_with_size;
+         "obstacle default size" >:: test_emit_obstacle_default_size;
+         "assign literal target" >:: test_emit_assign_literal_target;
+         "assign param target" >:: test_emit_assign_param_target;
+         "win condition single" >:: test_emit_win_condition_single_field;
+         "win condition multi or"
+         >:: test_emit_win_condition_multiple_fields_ored;
+       ]
 
-let smoke_tests = "Full pipeline smoke tests" >::: [
-  "has main entrypoint"     >:: test_full_program_contains_main_entrypoint;
-  "imports runtime"         >:: test_full_program_imports_runtime;
-  "combines all blocks"     >:: test_full_program_combines_all_blocks;
-]
+let smoke_tests =
+  "Full pipeline smoke tests"
+  >::: [
+         "has main entrypoint" >:: test_full_program_contains_main_entrypoint;
+         "imports runtime" >:: test_full_program_imports_runtime;
+         "combines all blocks" >:: test_full_program_combines_all_blocks;
+       ]
 
 let () =
-  run_test_tt_main ("GameDSL codegen" >::: [
-    expr_tests;
-    condition_tests;
-    stmt_tests;
-    loop_tests;
-    block_tests;
-    smoke_tests;
-  ])
+  run_test_tt_main
+    ("GameDSL codegen"
+    >::: [
+           expr_tests;
+           condition_tests;
+           stmt_tests;
+           loop_tests;
+           block_tests;
+           smoke_tests;
+         ])

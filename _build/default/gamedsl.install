@@ -4,7 +4,7 @@ lib: [
   "_build/install/default/lib/gamedsl/opam"
 ]
 bin: [
-  "_build/install/default/bin/gamedsl"
+  "_build/install/default/bin/gamedsl_c"
 ]
 doc: [
   "_build/install/default/doc/gamedsl/README.md"

@@ -14,7 +14,7 @@ fn punish_on_death(target, boost) {
 }
 
 fn boost_player_damage(pname, extra) {
-  Sword.damage = Sword.damage + extra
+  "Sword".damage = "Sword".damage + extra
 }
 
 world {
@@ -30,7 +30,7 @@ player "P1" {
 }
 
 ability "Sword" {
-  type: active
+  type: active  
   key: SPACE
   damage: 30
   range: 2

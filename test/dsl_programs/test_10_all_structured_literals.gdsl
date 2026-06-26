@@ -55,6 +55,8 @@ monster "Ghost" {
   count: zero_count
 }
 
+assign "P1" abilities ["PowerUp", "NuclearStrike", "UltraRage"]
+
 // Tests large GRID_DIM in obstacle size
 obstacle "BigWall" {
   position: 0, 49
@@ -66,7 +68,7 @@ obstacle "Dot" {
   position: 50, 50
 }
 
-assign "P1" abilities ["PowerUp", "NuclearStrike", "UltraRage"]
+
 
 win_condition {
   survive: 999s

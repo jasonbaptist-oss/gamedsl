@@ -1,4 +1,4 @@
 (lang dune 3.20)
 (name gamedsl)
 (sections (lib .) (bin ../../bin) (doc ../../doc/gamedsl))
-(files (lib (META dune-package opam)) (bin (gamedsl)) (doc (README.md)))
+(files (lib (META dune-package opam)) (bin (gamedsl_c)) (doc (README.md)))

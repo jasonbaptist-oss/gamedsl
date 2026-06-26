@@ -521,7 +521,7 @@ and check_loop_towards_refs tbl r loop =
             check_actions t;
             match e with Some b -> check_actions b | None -> ())
         | ALoop l -> check_actions l.loop_actions
-        | AMove _ | AWait _ | AAssign _ | AField _ | ASpawn _ -> ())
+        | AMove _ | AWait _ | AAssign _ | AField _ | ASpawn _ | AFnCall _ -> ()) (* <-- FIXED HERE *)
       actions
   in
   check_actions loop.loop_actions
@@ -561,7 +561,7 @@ and check_spawns_in_actions tbl r actions =
           check_spawns_in_actions tbl r t;
           match e with Some b -> check_spawns_in_actions tbl r b | None -> ())
       | ALoop l -> check_spawns_in_actions tbl r l.loop_actions
-      | AMove _ | AWait _ | AAssign _ | AField _ -> ())
+      | AMove _ | AWait _ | AAssign _ | AField _ | AFnCall _ -> ()) (* <-- FIXED HERE *)
     actions
 
 let check_spawns prog tbl r =
@@ -637,7 +637,7 @@ let check_fn_decl tbl r f =
             walk_actions t;
             match e with Some b -> walk_actions b | None -> ())
         | ALoop l -> walk_actions l.loop_actions
-        | AMove _ | AWait _ | AAssign _ | AField _ | ASpawn _ -> ())
+        | AMove _ | AWait _ | AAssign _ | AField _ | ASpawn _ | AFnCall _ -> ()) (* <-- FIXED HERE *)
       actions
   in
   walk_stmts f.fn_body
@@ -685,6 +685,21 @@ let check_functions prog tbl r =
             check_calls_in_actions t;
             match e with Some b -> check_calls_in_actions b | None -> ())
         | ALoop l -> check_calls_in_actions l.loop_actions
+        | AFnCall call -> ( (* <-- FIXED HERE: Added proper validation for action-level fn calls! *)
+            match Hashtbl.find_opt tbl.fn_names call.call_name with
+            | None ->
+                add_error r
+                  (Printf.sprintf "call to undefined function \"%s\""
+                     call.call_name)
+            | Some target ->
+                let expected = List.length target.fn_params in
+                let got = List.length call.call_args in
+                if expected <> got then
+                  add_error r
+                    (Printf.sprintf
+                       "function \"%s\" expects %d argument(s) but call \
+                        provides %d"
+                       call.call_name expected got))
         | AMove _ | AWait _ | AAssign _ | AField _ | ASpawn _ -> ())
       actions
   in
@@ -739,7 +754,7 @@ and check_refs_in_actions tbl r actions =
           check_refs_in_actions tbl r t;
           match e with Some b -> check_refs_in_actions tbl r b | None -> ())
       | ALoop l -> check_refs_in_actions tbl r l.loop_actions
-      | AMove _ | AWait _ | AAssign _ | ASpawn _ -> ())
+      | AMove _ | AWait _ | AAssign _ | ASpawn _ | AFnCall _ -> ()) (* <-- FIXED HERE *)
     actions
 
 let check_entity_refs prog tbl r =
